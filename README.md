@@ -1,17 +1,20 @@
-# AI Governance Portfolio
+#AI Governance Portfolio
+This repository documents my practical work in AI governance, AI risk management, responsible AI, and regulatory compliance.
+The portfolio is based on internationally recognized governance frameworks including:
 
-**5 Practical Projects Demonstrating Operational AI Governance**
+NIST AI Risk Management Framework (AI RMF)
+EU AI Act
+Responsible AI principles
 
-> *"Reading the EU AI Act is not a project. These are."*
+Through these projects, I explore how organizations can identify, assess, govern, and monitor AI systems while balancing innovation, safety, transparency, and accountability.
+Author: Victor Eze Odoh
+Background:
 
----
+B.Sc. Political Science
+Data Analyst | Power BI Developer | SQL Practitioner
+AI Governance and Policy Researcher
 
-This repository contains five structured projects that translate AI governance frameworks into practical, defensible artefacts. Each project simulates work that organisations are actively trying to do — and struggling with — in 2026.
-
-The projects draw on two primary frameworks:
-
-- **EU AI Act** — risk-based classification, high-risk system obligations, conformity requirements
-- **NIST AI Risk Management Framework (AI RMF)** — four core functions: Govern, Map, Measure, Manage
+Note: Projects 01–05 are adapted from a portfolio structure originally created by Taimur Ijlal. Project 06 applies these frameworks to African public sector contexts — my original contribution.
 
 ---
 
