@@ -42,7 +42,7 @@ Project 06 applies these frameworks to African public sector contexts — my ori
 
 | # | Project | Primary Framework | Key Artefact |
 |---|---------|-------------------|--------------|
-| 1 | [AI System Inventory & Classification Engine](./Project 01 - AI System Inventory for Nigerian FMoH/) | EU AI Act · NIST AI RMF | Inventory + classification rationale |
+| 1 | [AI System Inventory & Classification Engine](./project-01-ai-system-inventory/) | EU AI Act · NIST AI RMF | Inventory + classification rationale |
 | 2 | [AI Risk Assessment & Governance Review Pack](./project-02-risk-assessment/) | NIST AI RMF (Map, Measure) | Risk matrix + executive memo |
 | 3 | [Responsible AI Policy & Operating Model](./project-03-responsible-ai-policy/) | NIST AI RMF (Govern) | Policy document + process diagram |
 | 4 | [AI Incident Response & Regulatory Escalation](./project-04-incident-response/) | NIST AI RMF (Manage) · EU AI Act | Incident timeline + RCA template |
