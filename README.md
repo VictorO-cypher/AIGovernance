@@ -12,11 +12,10 @@ Through these projects, I explore how organizations can identify, assess, govern
 
 Author: Victor Eze Odoh
 
-Background:
-B.Sc. Political Science
-
-Data Analyst | Power BI Developer | SQL Practitioner
-AI Governance and Policy Researcher
+**Background:**
+- B.Sc. Political Science
+- Data Analyst | Power BI Developer | SQL Practitioner
+- AI Governance and Policy Researcher
 
 Note: Projects 01–05 are adapted from a portfolio structure originally created by Taimur Ijlal. 
 
@@ -87,4 +86,12 @@ These are designed to be read in order — each project builds conceptual depth 
 
 Built to demonstrate that AI governance competence is operational, not theoretical.
 
-Author: [Taimur Ijlal](https://github.com/taimurij) · The Cloud Security Guy
+**Author:** [Victor Eze Odoh](https://github.com/VictorO-cypher)  
+**Focus:** AI Governance & Policy | Responsible AI | African Public Sector Contexts  
+
+**Background:**
+- B.Sc. Political Science — National Open University of Nigeria
+- Data Analyst | Power BI Developer | SQL Practitioner
+- AI Governance and Policy Researcher
+
+**Note:** Projects 01–05 are adapted from a portfolio structure originally created by [Taimur Ijlal](https://github.com/taimurijlal/AIGovernance). Project 06 applies these frameworks to African public sector contexts — my original contribution.
