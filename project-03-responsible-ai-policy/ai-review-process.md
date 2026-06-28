@@ -1,229 +1,248 @@
-# AI Use Case Review and Approval Process
+# AI Use Case Review & Approval Process
+## Federal Ministry of Health, Nigeria
 
-**Owner:** AI Governance Programme Office
-**Version:** 1.0
-**Effective Date:** March 2026
-
----
-
-## Overview
-
-This document describes the end-to-end process for submitting, reviewing, and approving AI use cases at NorthStar Financial Services. It applies to all new AI systems and to material changes to existing systems.
-
-The process is designed to be **proportionate**: simpler, lower-risk use cases move quickly. Higher-risk systems receive more rigorous scrutiny. The goal is appropriate governance, not maximum friction.
+**Document Version:** 1.0  
+**Effective Date:** July 2026  
+**Owner:** Director, eHealth Division, Federal Ministry of Health  
 
 ---
 
-## Process Flow
+## 1. Purpose
+
+This document defines the process by which AI systems are submitted, reviewed, approved, and monitored within the Federal Ministry of Health (FMoH). It ensures that every AI deployment — whether procured from a vendor, developed internally, or introduced through a donor programme — passes through a proportionate governance review before deployment.
+
+The process is designed to be **proportionate**: minimal-risk systems receive a lightweight review. High-risk clinical AI systems receive rigorous scrutiny. The goal is appropriate oversight, not bureaucratic friction.
+
+---
+
+## 2. Process Overview
+
+The FMoH AI Review Process has five stages:
 
 ```
-[1] USE CASE SUBMISSION
-      |
-      v
-[2] INTAKE TRIAGE (5 business days)
-      |
-      +----> [Prohibited] --> REJECT + Notify CRO
-      |
-      +----> [Minimal/Limited Risk] --> STANDARD REVIEW (2 weeks)
-      |
-      +----> [High Risk] --> ENHANCED REVIEW (4-6 weeks)
-      |
-      v
-[3] REVIEW AND ASSESSMENT
-      |
-      v
-[4] APPROVAL DECISION
-      |
-      +----> [Approved] --> Proceed to deployment with conditions
-      |
-      +----> [Approved with conditions] --> Implement conditions, re-confirm
-      |
-      +----> [Deferred] --> Address gaps, resubmit
-      |
-      +----> [Rejected] --> Document rationale, notify submitter
-      |
-      v
-[5] DEPLOYMENT AND REGISTRATION
-      |
-      v
-[6] ONGOING MONITORING AND REVIEW
+Stage 1: Submission
+      ↓
+Stage 2: Initial Screening & Risk Classification
+      ↓
+Stage 3: Governance Review (proportionate to risk tier)
+      ↓
+Stage 4: Approval Decision
+      ↓
+Stage 5: Post-Deployment Monitoring
 ```
 
 ---
 
-## Stage 1: Use Case Submission
+## 3. Stage 1 — Submission
 
-**Who submits:** The business owner (future system owner) of the proposed AI system.
+### Who submits?
 
-**How:** Submit an AI Use Case Request (AUCR) via the AI Governance Portal (or the AUCR template in the interim).
+Any FMoH department head, hospital director, programme manager, or donor programme coordinator who intends to:
 
-**Required information:**
+- Procure a new AI system or AI-powered service
+- Deploy an AI system developed internally or by a donor partner
+- Significantly upgrade or expand the scope of an existing AI system
+
+### What is submitted?
+
+The submitting party completes an **AI System Submission Form** and sends it to the eHealth Division. The form requires:
 
 | Field | Description |
-|-------|-------------|
-| Business purpose | What problem does this AI system solve? |
-| Intended users | Who within NorthStar will use this system? |
-| Affected individuals | Which external parties (customers, applicants, etc.) will be affected by AI outputs? |
-| Data sources | What data will the system process? Identify personal data explicitly. |
-| Output type | What does the system produce — recommendations, decisions, scores, generated content? |
-| Human oversight plan | How will human oversight be implemented? Who will review AI outputs before action is taken? |
-| Vendor or internal | Is this a vendor solution or internally developed? If vendor, who? |
-| Proposed go-live date | Requested production date |
-| System owner | Named individual accepting accountability for governance |
+|---|---|
+| System name and vendor | Name of the AI system and the vendor or developer |
+| Intended use case | What the system will be used for and by whom |
+| Data inputs | What data the system will process |
+| Outputs | What the system will produce (predictions, recommendations, decisions) |
+| Affected persons | Who will be affected by the system's outputs |
+| Human oversight | How human review of AI outputs is planned |
+| Proposed System Owner | Who will be accountable for the system |
+| Procurement status | Whether procurement has begun and at what stage |
 
-**Important:** Submission does not imply approval. Systems must not begin development or procurement activity that assumes approval before intake triage is complete.
+### Timeline
 
----
-
-## Stage 2: Intake Triage
-
-**Owner:** AI Governance Programme Office
-**Timeline:** 5 business days from receipt
-
-The AI Governance Programme Office reviews the AUCR to:
-
-1. Confirm completeness — incomplete AUCRs are returned for completion
-2. Apply preliminary EU AI Act risk classification
-3. Determine review pathway (Standard or Enhanced)
-4. Identify immediate red flags (e.g., prohibited use case)
-
-**Triage Outcomes:**
-
-| Outcome | Action |
-|---------|--------|
-| Prohibited use case | Reject. Notify Chief Risk Officer. Document decision. |
-| Minimal or Limited Risk | Route to Standard Review. |
-| High Risk (confirmed or probable) | Route to Enhanced Review. Brief system owner on requirements. |
-| Unclear classification | Engage Legal and DPO for classification opinion before routing. |
-
-The system owner is notified of the triage outcome and expected timeline within 5 business days.
+The eHealth Division acknowledges receipt within **5 working days** and initiates Stage 2 screening.
 
 ---
 
-## Stage 3A: Standard Review (Minimal / Limited Risk)
+## 4. Stage 2 — Initial Screening & Risk Classification
 
-**Timeline:** Up to 2 weeks
-**Owner:** AI Governance Programme Office
+### Who conducts it?
 
-Standard Review covers:
+The eHealth Division AI Governance Lead conducts initial screening, in consultation with the FMoH Legal Adviser where needed.
 
-- Confirmation of EU AI Act risk classification
-- Review of data sources against GDPR lawful basis
-- Confirmation of human oversight arrangements (if applicable)
-- For Limited Risk: confirmation of AI disclosure mechanism for affected individuals
-- Check of vendor AI governance practices (if vendor system)
+### What happens?
 
-**Reviewers:** AI Governance Programme Office. DPO consulted where personal data processing is material.
+The AI Governance Lead reviews the submission form and assigns a risk tier based on the FMoH AI Risk Classification criteria (aligned with EU AI Act tiers):
 
-**Documentation required:**
-- Completed AUCR
-- Privacy impact assessment (if personal data involved — may be combined with DPIA if required)
-- Vendor AI governance questionnaire (if vendor system)
+| Risk Tier | Classification Criteria |
+|---|---|
+| **High Risk** | System makes or influences clinical decisions, patient triage, disease surveillance, or public health emergency response; system processes sensitive health data to generate individual-level recommendations |
+| **Limited Risk** | System interacts with patients or public in non-clinical context; advisory-only outputs with no direct clinical decision pathway |
+| **Minimal Risk** | Internal administrative or planning tool; no direct patient impact; human retains full decision authority |
+| **Unacceptable Risk** | System manipulates patients; enables covert surveillance; violates NDPA 2023 or FMoH ethical standards |
 
----
+### Outputs
 
-## Stage 3B: Enhanced Review (High Risk)
-
-**Timeline:** 4–6 weeks
-**Owner:** AI Governance Programme Office (coordinates); AI Governance Committee (approves)
-
-Enhanced Review covers all Standard Review elements plus:
-
-- Full structured risk assessment (as per Project 2 template)
-- Technical documentation review (system description, training data, model architecture summary)
-- Bias and fairness evaluation plan — how will fairness be assessed, by whom, against which metrics?
-- Human oversight procedure — documented, role-specific, and testable
-- Conformity assessment plan (for EU AI Act Article 43 compliance)
-- Monitoring and performance management plan
-- Incident response procedure (AI-specific)
-
-**Reviewers:**
-
-| Reviewer | Contribution |
-|----------|-------------|
-| AI Governance Programme Office | Coordinates; produces risk assessment |
-| Data Protection Officer | GDPR and AI Act data governance |
-| Legal / Compliance | Regulatory classification opinion; contractual requirements |
-| Information Security | Cybersecurity and adversarial robustness |
-| ML Engineering | Technical feasibility of proposed controls |
-| External auditor / assessor | Independent bias evaluation (for high-risk systems with fairness implications) |
-
-**Documentation required:**
-- Full AUCR
-- Structured risk assessment
-- Technical documentation pack (aligned to EU AI Act Annex IV)
-- Vendor AI due diligence pack (if vendor system)
-- Bias evaluation plan or completed bias audit
-- Human oversight procedure
-- Monitoring plan
+- Risk tier assigned and communicated to submitting party within **10 working days**
+- Unacceptable Risk systems: rejected immediately with written explanation
+- High Risk systems: proceed to full governance review (Stage 3A)
+- Limited Risk systems: proceed to standard review (Stage 3B)
+- Minimal Risk systems: proceed to lightweight review (Stage 3C)
 
 ---
 
-## Stage 4: Approval Decision
+## 5. Stage 3 — Governance Review
 
-**Standard Review approval:** AI Governance Programme Office + System Owner sign-off
+### Stage 3A — Full Governance Review (High Risk Systems)
 
-**Enhanced Review approval:** AI Governance Committee formal decision (majority vote; quorum = CRO + at least two other Committee members)
+**Conducted by:** AI Review Committee  
+**Timeline:** 30 working days
 
-**Approval Conditions:** Approval may be granted conditionally, requiring specific controls to be implemented before or after go-live. Conditions must be documented, assigned to named owners, and have defined completion dates. Deployment cannot proceed if pre-go-live conditions are not met.
+The submitting party must provide:
 
-**Rejection:** If a system is rejected, the decision and rationale are documented and the system owner is notified. Rejected systems may be resubmitted following material changes to the use case or proposed controls.
+| Document | Description |
+|---|---|
+| Risk Assessment | Structured risk assessment using FMoH risk methodology (see Project 02) |
+| Bias Evaluation Report | Independent evaluation of system performance across demographic groups |
+| Training Data Disclosure | Vendor disclosure of training data provenance and demographic representation |
+| Human Oversight Protocol | Documented process for human review of AI outputs |
+| Data Protection Assessment | NDPA 2023 compliance review for personal health data processing |
+| Vendor AI Contract Clauses | Confirmation that AI-specific obligations are included in vendor contract |
+| System Owner Nomination | Formal nomination of a named System Owner with written acceptance |
 
-**Escalation:** If the AI Governance Committee cannot reach consensus, the decision escalates to the Chief Risk Officer. If the CRO decision is contested, it escalates to the Board Risk & Audit Committee.
-
----
-
-## Stage 5: Deployment and Registration
-
-Upon approval, the system owner must:
-
-1. Register the system in the AI System Inventory (AI Governance Programme Office records approval date, conditions, classification, and review date)
-2. Complete any pre-go-live conditions before deployment
-3. Ensure monitoring is in place before go-live
-4. Confirm human oversight procedures are operational and relevant staff are trained
-5. For high-risk systems: confirm EU AI Act registration requirements are met before go-live
-
-The AI Governance Programme Office will confirm go-live readiness before the system enters production.
+The AI Review Committee reviews all documents, may request additional information or independent expert assessment, and issues a written recommendation to the Permanent Secretary.
 
 ---
 
-## Stage 6: Ongoing Monitoring and Review
+### Stage 3B — Standard Review (Limited Risk Systems)
 
-**Continuous monitoring (system owner responsibility):**
-- Track performance metrics against thresholds defined at approval
-- Monitor for data drift, performance degradation, or emerging fairness issues
-- Ensure human oversight procedures are maintained
-- Report material issues to the AI Governance Programme Office
+**Conducted by:** eHealth Division AI Governance Lead  
+**Timeline:** 15 working days
 
-**Periodic review (AI Governance Programme Office):**
+Required documentation:
 
-| Risk Tier | Minimum Review Frequency |
-|-----------|------------------------|
-| High Risk | Annual formal review + event-driven review |
-| Limited Risk | Annual check-in with system owner |
-| Minimal Risk | Biennial review or upon material change |
+| Document | Description |
+|---|---|
+| AI Disclosure Plan | How users will be informed they are interacting with an AI |
+| Data Protection Assessment | NDPA 2023 compliance review |
+| System Owner Nomination | Named System Owner with written acceptance |
 
-**Trigger for out-of-cycle review:**
-- Material change to the system (new model version, expanded scope, new data source)
-- AI incident involving the system
-- Regulatory change that affects the system's classification or obligations
-- System owner change
+The AI Governance Lead reviews documentation and issues an approval recommendation.
 
 ---
 
-## Material Changes
+### Stage 3C — Lightweight Review (Minimal Risk Systems)
 
-Material changes to approved systems require a new AUCR or a change request to the AI Governance Programme Office. What constitutes a material change:
+**Conducted by:** eHealth Division AI Governance Lead  
+**Timeline:** 5 working days
 
-- Change of system purpose or scope
-- New category of personal data processed
-- Significant model update (retraining on new data, architecture change)
-- Change of vendor
-- Deployment to a new geography
-- Change of system owner
+Required documentation:
 
-Minor changes (e.g., UI updates, bug fixes that do not affect model behaviour) may be documented without a new review, at the discretion of the AI Governance Programme Office.
+| Document | Description |
+|---|---|
+| System Owner Nomination | Named System Owner with written acceptance |
+| Brief Use Case Description | One-page summary of system purpose, data inputs, and outputs |
+
+The AI Governance Lead registers the system in the FMoH AI Systems Register and issues confirmation of registration.
 
 ---
 
-*Process queries: ai-governance@northstar-financial.example*
+## 6. Stage 4 — Approval Decision
+
+### High Risk Systems
+
+**Decision Authority:** Permanent Secretary, FMoH (on recommendation of AI Review Committee)
+
+Possible decisions:
+- **Approved** — system may proceed to deployment with conditions as specified
+- **Approved with Conditions** — system may proceed subject to satisfying specified conditions within a defined timeframe
+- **Deferred** — additional information or remediation required before decision
+- **Rejected** — system does not meet FMoH governance standards and may not be deployed
+
+All decisions are communicated in writing to the submitting party within **5 working days** of the AI Review Committee recommendation.
+
+### Limited Risk Systems
+
+**Decision Authority:** Director, eHealth Division
+
+### Minimal Risk Systems
+
+**Decision Authority:** eHealth Division AI Governance Lead (registration confirmation)
+
+---
+
+## 7. Stage 5 — Post-Deployment Monitoring
+
+Approval is not the end of governance — it is the beginning of ongoing oversight.
+
+### Review Frequencies
+
+| Risk Tier | Review Frequency | Reviewer |
+|---|---|---|
+| High Risk | Quarterly | System Owner + AI Review Committee |
+| Limited Risk | Annual | System Owner + eHealth Division |
+| Minimal Risk | Annual | System Owner |
+
+### What is reviewed?
+
+At each review, the System Owner submits a **System Performance Report** covering:
+
+- Performance metrics (accuracy, false positive/negative rates where applicable)
+- Incidents or near-misses since last review
+- Changes to system design, scope, or data inputs
+- User feedback and complaints
+- Vendor compliance with contract obligations
+- Any material changes to the risk profile
+
+### Triggers for unscheduled review
+
+The following events trigger an immediate unscheduled review regardless of the scheduled cycle:
+
+- Any identified case of patient harm potentially linked to an AI recommendation
+- A material change to the system's design, training data, or operational scope
+- A significant change in the vendor's ownership, financial stability, or security posture
+- A data breach involving personal health data processed by the system
+- A regulatory or legal development that may affect the system's compliance status
+
+---
+
+## 8. Fast-Track Process for Donor-Funded AI Systems
+
+Many AI systems in the FMoH portfolio are introduced through international donor programmes (USAID, GAVI, Global Fund, WHO). These systems frequently arrive with existing governance documentation from the donor's own review processes.
+
+Donor-funded systems are not exempt from this review process. However, where a donor has conducted a governance review aligned with NIST AI RMF, WHO AI Ethics guidance, or equivalent international standards, the eHealth Division may accept donor documentation in partial satisfaction of Stage 3 requirements. A gap analysis will be conducted to identify any requirements not addressed by donor documentation.
+
+Donor programme managers are encouraged to engage the eHealth Division early in procurement planning to streamline the review process.
+
+---
+
+## 9. Process Summary Diagram
+
+```
+AI System Identified
+        ↓
+Submit AI System Submission Form to eHealth Division
+        ↓
+eHealth Division: Initial Screening & Risk Classification (10 days)
+        ↓
+    ┌───────────────────────────────────────┐
+    │                                       │
+High Risk                            Limited Risk          Minimal Risk
+    │                                       │                   │
+Full Governance Review              Standard Review      Lightweight Review
+(AI Review Committee, 30 days)      (15 days)            (5 days)
+    │                                       │                   │
+Permanent Secretary Decision        Director Decision    Registration
+    │                                       │                   │
+    └───────────────────────────────────────┘
+                        ↓
+              Deployment (if approved)
+                        ↓
+         Post-Deployment Monitoring (ongoing)
+                        ↓
+         Scheduled Reviews + Incident Reporting
+```
+
+---
+
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
