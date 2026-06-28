@@ -1,216 +1,104 @@
-# Incident Response Timeline — AI-INC-2026-001
+# Incident Response Timeline — FMoH-INC-2026-001
 
-**Incident:** CreditScore Pro Postcode Bias
-**Timeline Period:** March 2026 — May 2026
-
----
-
-## Week 1 (10–14 March 2026): Detection and Immediate Response
-
-### Day 1 — Tuesday 10 March
-**Event:** Detection
-
-- Data scientist identifies anomalous postcode-correlated score disparity during bias audit
-- Initial finding documented and shared with ML Engineering manager
-- Informal escalation to Head of Credit Risk begins
-
-**Status:** Detection phase
+**Incident:** MamaAlert Maternal Risk Scoring Tool — Systematic Misclassification  
+**System:** FMoH-AI-003  
+**Incident Opened:** 4 September 2026  
+**Target Resolution:** 4 December 2026 (90 days)  
 
 ---
 
-### Day 2 — Wednesday 11 March
-**Event:** Escalation and Initial Triage
+## Phase 1 — Detection and Containment (Week 1: 4–11 September 2026)
 
-- Head of Credit Risk convenes emergency call with ML Engineering lead and the data scientist
-- Preliminary analysis confirms finding: the disparity is statistically significant and consistent across multiple postcode clusters
-- Head of Credit Risk notifies AI Governance Programme Office
-- AGPO classifies as Severity 1 incident (AI-INC-2026-001) and initiates incident response
-
-**Notifications issued:**
-- CRO notified (Day 2, within 24-hour requirement) ✓
-- Legal and Compliance notified ✓
-- Data Protection Officer notified ✓
-
-**Immediate containment decision:**
-AGPO and Head of Credit Risk recommend immediate suspension of automated decision-making for applications from affected postcodes, pending further investigation. Applications in the affected postcodes will be routed to manual underwriting review.
-
-CRO approves containment measure.
-
----
-
-### Day 3 — Thursday 12 March
-**Event:** Containment Implemented; Board Notification
-
-- CreditScore Pro model output for applications from affected postcode clusters is suspended as the sole decisioning input
-- Applications from affected postcodes (approximately 15–20 per day) routed to manual underwriting queue
-- Manual underwriting capacity confirmed adequate for interim volume
-- Board Risk & Audit Committee Chair notified by CRO (within 48-hour requirement) ✓
-- Extraordinary AI Governance Committee session scheduled for 14 March
-
-**Legal and Compliance begin regulatory disclosure assessment:**
-- EU AI Act Article 73 — does this constitute a "serious incident"?
-- AFM — FCA equivalent, Netherlands — notification obligations?
-- GDPR Article 22 — were past applicants informed of automated processing?
+| Date | Action | Owner | Status |
+|---|---|---|---|
+| 4 Sep | AI Governance Lead classifies incident as Critical — Patient Safety | AI Governance Lead | ✅ Complete |
+| 4 Sep | Director, eHealth Division notified | AI Governance Lead | ✅ Complete |
+| 5 Sep | MamaAlert suspended across all 12 active states | Director, eHealth Division | ✅ Complete |
+| 5 Sep | Suspension notifications sent to all state PHCDAs, CHEW supervisors, NPHCDA, DabaDoc, and USAID | AI Governance Lead | ✅ Complete |
+| 5 Sep | CHEWs instructed to revert to manual clinical risk assessment protocols | NPHCDA | ✅ Complete |
+| 5 Sep | AI Review Committee extraordinary meeting convened | Director, eHealth Division (Chair) | ✅ Complete |
+| 5 Sep | Incident investigation team established | AI Review Committee | ✅ Complete |
+| 6 Sep | DabaDoc formally notified of incident and required to preserve all system logs and model documentation | FMoH Legal Adviser | ✅ Complete |
+| 6 Sep | USAID Nigeria health programme office notified of incident and suspension | Director, eHealth Division | ✅ Complete |
+| 8 Sep | Clinical review of random sample (200 cases) from Northwest states completed — 23% misclassification rate confirmed | Clinical Services Representative | ✅ Complete |
+| 8 Sep | Estimate of total patient exposure communicated to AI Review Committee (~4,200 active cases; ~180,000 historical) | AI Governance Lead | ✅ Complete |
+| 10 Sep | Nigeria Data Protection Commission notified (NDPA 2023 — data processing linked to patient harm) | Data Protection Officer | ✅ Complete |
+| 11 Sep | Manual clinical re-assessment protocol confirmed operational in all 12 states | NPHCDA | ✅ Complete |
 
 ---
 
-### Day 4–5 — Friday–Saturday 14–15 March
-**Event:** AI Governance Committee Extraordinary Session
+## Phase 2 — Investigation (Weeks 2–4: 12 September – 3 October 2026)
 
-**Agenda:**
-1. Incident briefing and confirmed scope
-2. Containment status
-3. Regulatory disclosure recommendation
-4. Investigation plan approval
-5. Customer communication approach
-
-**Decisions made:**
-1. Containment measure approved as ongoing pending model investigation
-2. Legal and Compliance to prepare regulatory disclosure recommendation for CRO approval by 21 March
-3. Independent external forensic analysis of model commissioned (ML bias consultancy engaged by Monday 16 March)
-4. Past application review programme initiated: all applications from affected postcodes in the past 24 months to be reviewed
-5. Customer communication: no proactive outreach to affected applicants until scope of harm is quantified (target: 28 March for outreach plan)
-6. Internal communications: staff in Credit Risk, Customer Experience, and Compliance to receive briefing by 18 March
+| Date | Action | Owner | Status |
+|---|---|---|---|
+| 12 Sep | DabaDoc requested to provide: training data composition report, model architecture documentation, performance evaluation results, and all previous internal bias assessments | FMoH Legal Adviser | ✅ Complete |
+| 15 Sep | Independent clinical AI expert engaged to lead technical investigation | AI Review Committee | ✅ Complete |
+| 18 Sep | DabaDoc submits training data composition report — confirms training data was 94% urban Southwest Nigeria facility data | DabaDoc | ✅ Complete |
+| 19 Sep | Training data bias confirmed as primary root cause — model systematically undertrained on Northwest Nigerian patient risk profile | Independent Expert | ✅ Complete |
+| 22 Sep | Historical case review initiated — clinical teams in Northwest states begin reviewing MamaAlert classifications for women who subsequently experienced adverse maternal outcomes | NPHCDA / Clinical Services | 🔄 In Progress |
+| 25 Sep | Root cause analysis draft completed and shared with AI Review Committee | Independent Expert / AI Governance Lead | ✅ Complete |
+| 30 Sep | DabaDoc presents remediation proposal to AI Review Committee: retraining plan using Northwest Nigerian data, independent bias evaluation before redeployment | DabaDoc | ✅ Complete |
+| 3 Oct | AI Review Committee approves root cause analysis and requests final RCA report | AI Review Committee | ✅ Complete |
 
 ---
 
-## Week 2 (16–20 March 2026): Investigation
+## Phase 3 — Remediation Planning (Weeks 5–8: 4–31 October 2026)
 
-### Actions
-
-- External forensic analysis of CreditScore Pro model begins
-- Internal data pull: all applications from affected postcodes since model go-live (March 2022 — March 2026)
-- Full feature importance analysis commissioned to identify all features contributing to disparity
-- DPO reviews whether GDPR Article 22 disclosures were made correctly for past automated decisions
-- Legal begins drafting regulatory notification letters
-- HR contacted: same postcode clusters exist in NorthStar's service area — check whether TalentMatch AI (NS-AI-003) exhibits same pattern
-
-**Emerging findings (preliminary):**
-- Postcode feature contributes approximately 8% to overall model score in the affected clusters
-- The disparity has been present since model go-live; it was not introduced by a recent update
-- Approximately 4 years of applications are in scope for retrospective review
-- TalentMatch AI: HR Director confirms use in affected postcodes; separate bias review initiated
+| Date | Action | Owner | Status |
+|---|---|---|---|
+| 4 Oct | FMoH Legal team initiates vendor contract renegotiation — new AI-specific clauses including training data disclosure, bias evaluation obligations, performance SLAs, incident reporting, and liability provisions | FMoH Legal / Procurement | 🔄 In Progress |
+| 7 Oct | NPHCDA and clinical teams begin structured data collection in Northwest states to support model retraining | NPHCDA | 🔄 In Progress |
+| 10 Oct | Communication plan approved — proactive briefing for state health commissioners in 12 active states | Director, eHealth Division | ✅ Complete |
+| 10 Oct | State health commissioners briefed on incident, suspension, and remediation plan | Director, eHealth Division | ✅ Complete |
+| 14 Oct | Historical case review — interim findings: 17 additional cases identified in Northwest states where MamaAlert Low/Medium classification preceded adverse maternal outcome; causal link under clinical assessment | NPHCDA / Clinical Services | 🔄 In Progress |
+| 15 Oct | CHEW capacity building programme designed — training curriculum for interpreting and challenging AI risk scores | eHealth Division / NPHCDA | 🔄 In Progress |
+| 20 Oct | Outcome tracking system designed — links MamaAlert classifications to actual maternal outcomes for continuous performance monitoring post-redeployment | AI Governance Lead / NHMIS | 🔄 In Progress |
+| 25 Oct | Independent bias evaluator procured — independent organisation to validate retrained model before redeployment approval | AI Review Committee | 🔄 In Progress |
+| 31 Oct | Vendor contract renegotiation — target completion | FMoH Legal / Procurement | ⬜ Pending |
 
 ---
 
-## Week 3 (23–27 March 2026): Scope Confirmation and Regulatory Engagement
+## Phase 4 — Remediation Implementation (Weeks 9–12: 1 November – 4 December 2026)
 
-### External Forensic Analysis — Preliminary Findings (24 March)
-
-**Key findings:**
-1. Postcode feature acts as a statistically significant proxy for ethnicity in 11 postcode clusters across Amsterdam and Rotterdam
-2. The average score depression for affected applicants is 43 points (range: 31–67 points across clusters)
-3. At NorthStar's credit policy thresholds, a 43-point depression translates to an increased rejection rate of approximately 12 percentage points for borderline applicants
-4. The disparity cannot be explained by underlying creditworthiness differences — the model is introducing a bias, not measuring a real risk differential
-5. Root cause (preliminary): postcode was included as a geographic feature without proxy analysis. The training data reflected historical lending patterns in those areas, which themselves reflected past discriminatory lending practices (redlining)
-
-**Scope confirmed:**
-- 4,127 applications from affected postcodes reviewed since March 2022
-- 847 rejections that may have been influenced by the bias
-- 1,892 approvals at potentially inflated interest rates
-
-**Regulatory disclosure decision (27 March):**
-CRO approves regulatory notifications:
-- AFM formal notification submitted: 27 March 2026
-- EU AI Act national authority (Dutch Authority for Digital Infrastructure) notified: 27 March 2026
-- Data Protection Authority notified (GDPR Article 22 potential breach): 27 March 2026
+| Date | Action | Owner | Status |
+|---|---|---|---|
+| 1 Nov | DabaDoc begins model retraining incorporating Northwest Nigerian clinical data | DabaDoc | ⬜ Pending |
+| 7 Nov | CHEW capacity building training delivered in all 12 states | eHealth Division / NPHCDA | ⬜ Pending |
+| 14 Nov | Outcome tracking system implemented in DHIS2 — links MamaAlert classifications to maternal outcome records | NHMIS / eHealth Division | ⬜ Pending |
+| 20 Nov | DabaDoc submits retrained model for independent bias evaluation | DabaDoc | ⬜ Pending |
+| 28 Nov | Independent bias evaluation completed — results presented to AI Review Committee | Independent Evaluator | ⬜ Pending |
+| 30 Nov | AI Review Committee reviews bias evaluation results and makes redeployment recommendation to Permanent Secretary | AI Review Committee | ⬜ Pending |
+| 4 Dec | Permanent Secretary decision on redeployment | Permanent Secretary | ⬜ Pending |
 
 ---
 
-## Week 4 (30 March – 3 April 2026): Customer Impact Assessment and Communication Plan
+## Phase 5 — Post-Incident Review and Lessons Learned (Week 13+: December 2026)
 
-### Customer Impact Quantification
-
-Finance and Credit Risk teams complete financial impact modelling:
-- Total estimated excess interest charged to affected approved applicants: €2.3 million
-- Estimated customers who were rejected but would have been approved under a fair model: 234 (based on re-scoring without postcode feature)
-
-### Customer Communication Plan Approved (2 April)
-
-**Decision:** Proactive outreach to all affected customers
-
-Communication approach:
-1. **Affected applicants who were rejected** — personal letter acknowledging that their application may have been unfairly assessed, offering a fresh review at no cost, with human underwriter making the decision
-2. **Affected applicants who were approved at higher rates** — personal letter acknowledging potential overcharging, confirming they will receive a calculation of excess interest paid and a refund
-3. **General customer notice** — published on NorthStar website: confirmation that a bias issue was identified and is being remediated
-
-Legal approves communications. DPO confirms GDPR compliance.
-
-**Customer outreach begins: 7 April 2026**
+| Action | Owner | Target Date |
+|---|---|---|
+| Full incident post-mortem report completed and shared with AI Review Committee | AI Governance Lead | 18 Dec 2026 |
+| Lessons learned communicated to all FMoH System Owners | AI Governance Lead | 18 Dec 2026 |
+| Historical case review — final report on adverse outcomes potentially linked to MamaAlert misclassification | NPHCDA / Clinical Services | 31 Dec 2026 |
+| Annual AI Governance Report — MamaAlert incident included as case study | Director, eHealth Division | Jan 2027 |
+| Policy update — mandatory pre-deployment bias evaluation added as explicit gate condition for all High Risk AI systems | AI Governance Lead | Jan 2027 |
+| WHO Nigeria country office briefed on incident and FMoH response | Director, eHealth Division | Jan 2027 |
 
 ---
 
-## Week 5–6 (6–17 April 2026): Remediation
+## Incident Status Summary
 
-### Model Remediation Plan (approved 6 April)
+| Phase | Status |
+|---|---|
+| Phase 1 — Detection and Containment | ✅ Complete |
+| Phase 2 — Investigation | ✅ Substantially complete; historical review ongoing |
+| Phase 3 — Remediation Planning | 🔄 In Progress |
+| Phase 4 — Remediation Implementation | ⬜ Pending |
+| Phase 5 — Post-Incident Review | ⬜ Pending |
 
-**Short-term (immediate):**
-- Remove postcode as a feature from CreditScore Pro model
-- Retrain model on adjusted dataset — postcode excluded
-- Validate retrained model against fairness criteria before redeployment
-
-**Medium-term (60 days):**
-- Commission full fairness audit of retrained model by independent evaluator
-- Implement ongoing demographic parity monitoring in production
-- Establish automated alerts for emerging score disparities
-
-**Model retraining timeline:**
-- Postcode removal and retraining: 6 April – 30 April
-- Internal validation: 1–14 May
-- External fairness audit: 15–31 May
-- Redeployment (with enhanced monitoring): 1 June 2026
-
-**During remediation period:** All credit decisions from manual underwriting
-
-### Retrospective Review Programme
-
-- 847 rejected applications under review by external underwriting panel (NorthStar staff with conflict-of-interest recusal)
-- Target: complete by 30 April 2026
-- Applicants whose rejections are reversed will be contacted with a new offer
+**Overall Incident Status: Under active management**  
+**No patient safety risk from active system** (system suspended)  
+**Manual clinical protocols operational in all 12 states**
 
 ---
 
-## Week 8–10 (May 2026): Root Cause Analysis and Lessons Learned
-
-- Formal root cause analysis document completed (see [`root-cause-analysis.md`](./root-cause-analysis.md))
-- AI Governance Committee reviews RCA and approves corrective action plan (15 May)
-- Model retrained and independently validated
-- External fairness audit completed
-
-**Model redeployment approved: 2 June 2026** (conditional on enhanced monitoring controls being in place at go-live)
-
----
-
-## Week 12 (9–13 June 2026): Incident Closure
-
-**Closure conditions:**
-- [x] All affected customers contacted
-- [x] Retrospective review of rejected applications complete
-- [x] Refunds calculated and issued
-- [x] Retrained model independently validated
-- [x] Fairness audit completed
-- [x] Regulators updated with closure report
-- [x] Root cause analysis and corrective actions documented and approved
-- [x] Lessons learned shared with AI governance programme
-- [x] Board notified of closure
-
-**Incident closed: 12 June 2026**
-
----
-
-## Incident Summary — Key Metrics
-
-| Metric | Value |
-|--------|-------|
-| Detection to containment | 2 days |
-| Detection to regulatory notification | 16 days |
-| Affected applications reviewed | 4,127 |
-| Rejections under retrospective review | 847 |
-| Offers issued to previously rejected applicants | 234 |
-| Excess interest refunded | €2.3 million |
-| Days to model redeployment | 84 |
-| Total incident duration | 95 days |
-
----
-
-*This timeline is a simulation of a well-managed AI incident response. In practice, timelines vary significantly based on investigation complexity, regulatory requirements, and organisational capacity.*
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
