@@ -1,149 +1,127 @@
-# Document 5: Logging and Traceability
+# 05 — Logging & Traceability
+## NCDC Integrated Disease Surveillance Platform — AI Module
 
-**System:** HireAssist Pro (NS-AI-008)
-**EU AI Act Reference:** Article 12 (Record-Keeping)
-**Document Type:** Provider (HireFlow) + Deployer (NorthStar)
-**Version:** 1.0 — March 2026
-
----
-
-## 1. Purpose
-
-Article 12 of the EU AI Act requires that high-risk AI systems have logging capabilities that enable traceability of the system's operation. Logs must enable, at a minimum:
-
-- Post-hoc verification that the system operated as intended
-- Identification of the circumstances under which the system was used (Article 12(1))
-- Detection and investigation of incidents
-- Evidence for compliance audits and regulatory investigation
-
-This document describes the logging architecture and traceability approach for HireAssist Pro as deployed at NorthStar.
+**Document Type:** Deployer Documentation  
+**System:** FMoH-AI-001  
+**Version:** 1.0  
+**Date:** October 2026  
+**Framework:** EU AI Act Article 12 | NIST AI RMF Manage 4.1  
 
 ---
 
-## 2. What Must Be Logged
+## 1. Logging Purpose
 
-For a recruitment AI system, the following events must be logged to satisfy Article 12 and enable meaningful incident investigation:
+Logging and traceability serve three functions for this system:
 
-| Event Category | Specific Events | Rationale |
+1. **Accountability** — creating an auditable record of what the AI predicted and what humans decided
+2. **Incident investigation** — enabling reconstruction of the system's outputs and human decisions in the event of a missed or false outbreak alert
+3. **Performance improvement** — providing the data needed to evaluate model accuracy and identify drift over time
+
+---
+
+## 2. What Is Logged
+
+### 2.1 Model Input Logs
+
+Every weekly model run logs the following:
+
+| Log Field | Description | Retention |
 |---|---|---|
-| **System inputs** | Job description submitted; CV ingested; candidate ID; submission timestamp | Enables reconstruction of what data the model processed |
-| **Model outputs** | Fit score per candidate; ranking; explanation text generated; model version; inference timestamp | Enables review of what the AI recommended and why |
-| **Reviewer actions** | Review initiated; reviewer ID; shortlist confirmed or modified; modification details; decision timestamp; time spent on review | Creates accountability record and enables oversight effectiveness monitoring |
-| **Candidate communications** | Communication type (invitation/rejection); sent timestamp; communication ID | Links AI recommendation chain to actual decision communicated to candidate |
-| **Overrides** | Override initiated; reason text; new shortlist; reviewer ID | Key evidence for fairness investigation and oversight quality monitoring |
-| **Model version** | Version number at time of each inference | Enables correlation of issues to specific model versions |
-| **System exceptions** | Special category data flag triggered; low-confidence flag triggered; system errors | Enables investigation of anomalous cases |
-| **Access and authentication** | User login/logout; role; session duration | Standard access audit trail |
+| Run ID | Unique identifier for each weekly model run | 15 years |
+| Run timestamp | Date and time of model execution | 15 years |
+| Model version | Version number of the model used | 15 years |
+| Input data sources | List of data feeds ingested for this run, with version/date stamps | 15 years |
+| Data quality flags | LGAs and states flagged for low reporting compliance | 15 years |
+| Missing data handling | Record of any substitutions made for missing environmental data | 15 years |
+
+### 2.2 Model Output Logs
+
+Every weekly model run logs the following outputs:
+
+| Log Field | Description | Retention |
+|---|---|---|
+| LGA risk scores | Risk probability score for every LGA, for every disease category | 15 years |
+| Risk classifications | Low/Medium/High/Critical classification for each LGA | 15 years |
+| Score deltas | Change in risk score from previous week for each LGA | 15 years |
+| High/Critical flag list | List of all LGAs classified High or Critical this week | 15 years |
+
+### 2.3 Human Decision Logs
+
+Every weekly epidemiologist review logs the following:
+
+| Log Field | Description | Retention |
+|---|---|---|
+| Reviewer identity | Name and title of reviewing epidemiologist | 15 years |
+| Review timestamp | Date and time of review completion | 15 years |
+| Decision per flagged LGA | Confirmed-Act / Monitor / Override-Low Confidence | 15 years |
+| Override rationale | Written rationale for any Override decisions | 15 years |
+| Actions initiated | Field investigations, enhanced surveillance, or escalations triggered | 15 years |
+| Time from output to review | Duration between model run completion and epidemiologist review | 5 years |
+
+### 2.4 Alert Logs
+
+Every outbreak alert initiated on the basis of AI module outputs logs:
+
+| Log Field | Description | Retention |
+|---|---|---|
+| Alert ID | Unique identifier for each alert | 15 years |
+| Authorising epidemiologist | Name of epidemiologist who confirmed the alert | 15 years |
+| AI risk score at time of alert | The model's risk score that contributed to the alert decision | 15 years |
+| Other evidence considered | Field reports, laboratory data, or other intelligence considered | 15 years |
+| Alert outcome | Whether the outbreak was subsequently confirmed or ruled out | 15 years |
 
 ---
 
-## 3. Logging Architecture
+## 3. Traceability Chain
 
-### 3.1 Provider Logging (HireFlow)
-
-HireFlow Technologies Ltd maintains the following logs at the model/API layer:
-
-| Log Type | Retention | Location | Access |
-|----------|-----------|---------|--------|
-| API request logs (input hash, timestamp, model version) | 36 months | HireFlow secure infrastructure (EU region) | Available to NorthStar on request; regulatory access within 72h |
-| Model output logs (score, explanation, timestamp) | 36 months | HireFlow secure infrastructure | Available to NorthStar on request |
-| Model version history | Indefinite | HireFlow system records | Available on request |
-
-**NorthStar's contractual log access rights:** NorthStar has the right to request logs for any application processed through the API within the retention period. Requests are fulfilled within 5 business days for standard requests, within 24 hours for incident investigation requests.
-
-### 3.2 Deployer Logging (NorthStar)
-
-NorthStar maintains the following logs in its own infrastructure (Workday ATS integration + SIEM):
-
-| Log Type | Retention | Location |
-|----------|-----------|---------|
-| Full application audit trail (all events above) | 36 months | NorthStar secure infrastructure (EU) |
-| Reviewer action log | 36 months | NorthStar HR systems |
-| Candidate communication record | 36 months | NorthStar HR systems |
-| Override log | 36 months | NorthStar HR systems |
-| Model output copy (for each inference used) | 36 months | NorthStar data warehouse |
-
-**Why 36 months?** This retention period is set to cover:
-- EU employment law dispute limitation periods (typically 3 years for discrimination claims in NL and DE)
-- EU AI Act audit and investigation timelines
-- NorthStar's internal governance review cycle
-
----
-
-## 4. Traceability by Use Case
-
-### Tracing a specific candidate decision
-
-For any candidate who applies and receives a decision, the full decision chain can be reconstructed:
+The logging system enables the following traceability chain for any outbreak alert or missed detection:
 
 ```
-Candidate X applies for Role Y
-  → CV ingested at [timestamp]
-  → Model v3.1.2 generates score 72/100 with explanation [text] at [timestamp]
-  → HR Coordinator A reviews at [timestamp], spends 4 minutes
-  → Coordinator modifies shortlist: removes candidate X (override reason: "Insufficient financial services experience for this specific role")
-  → Rejection communication sent to Candidate X at [timestamp]
-  → Log entry: override recorded, reason stored, reviewer ID recorded
+ALERT or MISSED DETECTION
+        ↓
+Identify Alert ID or incident date
+        ↓
+Retrieve Weekly Review Log for that date
+        ↓
+Identify epidemiologist decision and rationale
+        ↓
+Retrieve Model Output Log for that week
+        ↓
+Identify AI risk score and classification
+        ↓
+Retrieve Model Input Log for that week
+        ↓
+Identify data inputs, quality flags, and any substitutions
+        ↓
+Full reconstruction of AI prediction and human decision chain
 ```
 
-This chain provides:
-- Evidence of human oversight (review and override)
-- Basis for explanation to the candidate if challenged
-- Evidence for regulatory audit
-
-### Tracing a potential bias pattern
-
-For a bias investigation examining whether candidates from a specific demographic group were systematically ranked lower:
-
-```
-Query: All applications for Role Type = Analyst, Period = Q1 2026
-  → Extract: scores by candidate, model version, reviewer decision
-  → Cross-reference: candidate demographic proxy indicators (where available)
-  → Analyse: distribution of scores and final decisions by group
-  → Examine: override patterns — were lower-scoring group candidates recovered through override?
-```
-
-The log structure enables this analysis. The availability of demographic data for cross-referencing depends on what candidates disclosed — NorthStar does not require demographic disclosure as a condition of application.
+This chain enables the AI Review Committee and any external auditor to reconstruct exactly what the model predicted, what data it used, and what the epidemiologist decided — for any week in the system's operational history.
 
 ---
 
-## 5. Log Integrity and Security
+## 4. Log Storage and Access
 
-| Control | Implementation |
-|---------|--------------|
-| Log immutability | Logs written to append-only storage; modification requires CISO-level approval and creates audit entry |
-| Encryption at rest | AES-256 encryption for all stored logs |
-| Access controls | Role-based access: AGPO, DPO, Legal, and Information Security have read access; only automated processes have write access |
-| Log tampering detection | Hash-chaining on critical log entries (model output, reviewer decision) |
-| Backup | Daily backup to geographically separate EU region |
-| Regulatory access | Logs are producible for regulatory inspection within 24 hours of formal request |
-
----
-
-## 6. Log Review and Monitoring
-
-Logs are actively monitored (not just stored) as part of the ongoing governance of the system:
-
-| Log Review Activity | Frequency | Owner |
-|--------------------|-----------|-------|
-| Override rate monitoring | Monthly | HR Director |
-| Review time analysis (oversight effectiveness) | Monthly | AGPO |
-| Score distribution analysis by job type | Quarterly | AGPO + ML Engineering |
-| Demographic parity analysis (where proxy data available) | Quarterly | AGPO |
-| Access audit review | Quarterly | Information Security |
-| Full log audit | Annual | Internal Audit |
-
-Anomalies detected through log monitoring trigger escalation to AGPO and, if material, initiation of an AI incident review.
+| Parameter | Detail |
+|---|---|
+| Storage location | NCDC secure server infrastructure (Lagos data centre) |
+| Backup | Weekly backup to FMoH offsite storage |
+| Access | AI Governance Lead, NCDC Director General, AI Review Committee, authorised auditors |
+| Tamper protection | Logs are write-once; no modification permitted after creation |
+| Encryption | AES-256 encryption at rest and in transit |
 
 ---
 
-## 7. Limitations and Known Gaps
+## 5. Log Review
 
-| Limitation | Mitigation |
-|-----------|-----------|
-| Demographic data availability | Candidates are not required to disclose protected characteristics. Demographic parity analysis relies on proxy indicators, which are imperfect. | Monitoring is conducted on available data; limitations are documented in each monitoring report. |
-| Provider log access is request-based, not real-time | For real-time incident investigation, NorthStar relies on its own logs. Provider logs provide deeper model-layer detail but require a request process. | Incident response procedure accounts for this; provider logs are requested within 24h of a severity 1 incident. |
+| Review | Frequency | Reviewer |
+|---|---|---|
+| Override Register review | Quarterly | AI Review Committee |
+| Alert outcome reconciliation | Quarterly | AI Governance Lead + NCDC Epidemiology team |
+| Log completeness audit | Annual | AI Governance Lead |
+| Full log audit | On incident or AI Review Committee request | Independent auditor |
 
 ---
 
-*Log architecture and retention schedules are reviewed annually as part of the system governance review. Changes to log scope require AGPO approval.*
+*Document Version 1.0 — October 2026*  
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
