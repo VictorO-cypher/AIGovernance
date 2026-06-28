@@ -1,132 +1,146 @@
-# Document 3: Data Governance
+# 03 — Data Governance
+## NCDC Integrated Disease Surveillance Platform — AI Module
 
-**System:** HireAssist Pro (NS-AI-008)
-**EU AI Act Reference:** Article 10 (Data and Data Governance)
-**Document Type:** Provider documentation (supplied by HireFlow) + Deployer (NorthStar) additions
-**Version:** 1.0 — March 2026
-
----
-
-## 1. Overview
-
-Article 10 of the EU AI Act requires that high-risk AI systems use training, validation, and testing data that meets defined quality criteria. This document records the data governance practices for HireAssist Pro, covering both the training data used by the provider (HireFlow Technologies Ltd) and the candidate data processed by NorthStar as deployer.
+**Document Type:** Provider + Deployer Documentation  
+**System:** FMoH-AI-001  
+**Version:** 1.0  
+**Date:** October 2026  
+**Framework:** EU AI Act Article 10 | Nigeria Data Protection Act 2023  
 
 ---
 
-## 2. Training Data (Provider — HireFlow Technologies Ltd)
+## 1. Data Governance Principles
 
-### 2.1 Training Dataset Description
+FMoH and NCDC apply the following principles to all data used in the Disease Surveillance Platform AI Module:
 
-| Parameter | Detail |
-|-----------|--------|
-| Dataset name | HireFlow Recruitment Corpus v3 |
-| Size | 4.2 million CV–job description pairs |
-| Geographic coverage | EU-27 (weighted towards Germany, Netherlands, France, Poland) |
-| Time range | 2015–2024 |
-| Languages | English, German, Dutch, French |
-| Source | Aggregated from HireFlow enterprise customers (anonymised) + public job posting datasets |
-
-### 2.2 Data Provenance and Lawfulness
-
-HireFlow confirms that:
-- All data was collected under applicable data protection law
-- Enterprise customer data was provided under data processing agreements that include authorisation for aggregated model training (confirmed in contract)
-- Public dataset sources are identified in the technical documentation annex
-- No data was used that was subject to a competing intellectual property claim
-
-**NorthStar confirmation received:** Legal confirmed that the data provenance documentation satisfies NorthStar's standard for third-party AI training data. [Date: to be confirmed]
-
-### 2.3 Data Relevance and Representativeness
-
-The training dataset has been assessed for relevance and representativeness against the following criteria (Article 10(3)):
-
-| Criterion | Assessment |
-|-----------|-----------|
-| **Relevance** | Dataset consists of real CV–job description pairs. Relevant to the task of CV-to-job matching. ✓ |
-| **Representativeness** | Dataset covers EU geographies with weighting. Underrepresentation risk exists for Eastern European candidates and non-EU educational backgrounds. Documented limitation (see Document 1, Section 5). |
-| **Completeness** | Dataset is large (4.2M pairs). Completeness assessed as adequate for the task. |
-| **Freedom from errors** | Automated quality filtering applied (deduplication, format normalisation, personally identifiable information removal). Manual spot-checking of 2% of records performed. |
-| **Statistical properties** | Dataset statistics documented by HireFlow in technical documentation annex. Gender distribution: 51% male-presenting / 44% female-presenting / 5% not determinable. Age: median applicant age 31; range 18–72. |
-
-### 2.4 Bias Assessment of Training Data
-
-HireFlow conducted a bias evaluation of the training dataset and model outputs prior to v3.1 release. Key findings:
-
-- **Gender:** Demographic parity ratio (female:male shortlisting rate) = 0.94. Within accepted threshold (≥0.80). No remediation required.
-- **Age:** Candidates over 50 show a 0.87 demographic parity ratio. Flagged as a monitoring priority. Vendor has introduced age-neutral feature weighting for v3.1 to address this.
-- **Ethnicity proxy (name-based):** Analysis conducted using name-based ethnicity inference as a proxy. Demographic parity ratio for name-inferred non-European candidates = 0.91. Within threshold.
-- **Disability:** Insufficient signal in training data to evaluate. NorthStar to implement manual process for candidates who disclose disability in application.
-
-**NorthStar independent validation** of the bias evaluation is planned for April 2026 using a sample candidate dataset. Results will be documented separately and will be a condition of go-live approval.
+- **Minimisation:** Only data necessary for outbreak prediction is collected and processed
+- **Purpose limitation:** Data collected for disease surveillance is used only for that purpose
+- **Quality:** Data quality is monitored and deficiencies are flagged to system users
+- **Accountability:** A named Data Controller is responsible for all data processing associated with this system
+- **Legal basis:** All data processing has a documented lawful basis under the Nigeria Data Protection Act 2023
 
 ---
 
-## 3. Validation and Testing Data
+## 2. Data Inputs
 
-### 3.1 Validation Dataset
+### 2.1 Primary Surveillance Data
 
-HireFlow used a held-out validation set of 420,000 CV–job description pairs (10% of total dataset, stratified by geography and industry). Validation metrics are documented in the technical documentation annex.
-
-### 3.2 NorthStar Acceptance Testing Dataset
-
-NorthStar will conduct acceptance testing using a dataset of 300 historical NorthStar job applications (anonymised) across three representative role types:
-- Junior analyst (entry level, high volume)
-- Senior technology specialist (specialist role, lower volume)
-- Operations coordinator (administrative, mixed volume)
-
-Acceptance criteria are defined in the deployment plan. The testing dataset includes known-quality indicators to allow validation against ground truth.
-
----
-
-## 4. Candidate Data Processed by NorthStar (Deployer)
-
-### 4.1 Data Processed
-
-HireAssist Pro processes the following candidate personal data when deployed by NorthStar:
-
-| Data Category | Source | Processing Purpose | Retention |
+| Data Source | Description | Frequency | Legal Basis |
 |---|---|---|---|
-| CV content (unstructured text) | Candidate submission | Model input for CV-JD matching | 12 months post-application |
-| Job description text | NorthStar HR team | Model input | Indefinite (as job records) |
-| Fit score and explanation output | Generated by system | Reviewer reference | 12 months post-application |
-| Reviewer decision and override notes | HR coordinator | Oversight log | 36 months (employment law minimum) |
+| IDSR Weekly Reports | Disease case counts by LGA, submitted by state epidemiology teams | Weekly | Public health mandate — NCDC Act 2017 |
+| Hospital Admission Records | Aggregate (not individual) admission data by disease category from sentinel hospitals | Weekly | Public health mandate — FMoH statutory function |
+| NCDC Disease Registry | Historical outbreak records 2010–present, aggregated at LGA level | Static (updated annually) | Public health mandate |
+| Laboratory Confirmation Data | Confirmed disease cases from NCDC Reference Laboratory and state labs | Weekly | Public health mandate |
 
-### 4.2 Lawful Basis
+**Personal data:** Primary surveillance data is processed at **aggregate LGA level**. No individual patient identifiers are used as model inputs. Individual-level data collected through IDSR is aggregated before ingestion into the AI module.
 
-| Processing Activity | Lawful Basis | Notes |
-|--------------------|-------------|-------|
-| CV processing for shortlisting | Legitimate interests (GDPR Article 6(1)(f)) | Balanced against candidate rights assessment completed. Alternative: contract (Article 6(1)(b)) — legal to confirm preferred basis. |
-| Logging of AI-assisted decisions | Legal obligation (GDPR Article 6(1)(c)) | EU AI Act Article 12 requires logging. |
-| Retention for challenge/dispute purposes | Legitimate interests | Retention period justified by employment dispute limitation periods. |
+### 2.2 Environmental and Contextual Data
 
-**Note:** Candidates will be informed in the application process that AI is used for initial CV screening (transparency obligation). A GDPR Article 22 notice will be provided explaining that the AI output is reviewed by a human before any decision is communicated, and explaining how to request human review of any rejection.
-
-### 4.3 Data Minimisation
-
-NorthStar's deployment configuration processes only:
-- CV content as submitted by the candidate
-- Role-specific job descriptions
-
-NorthStar does not supply to the model: social media profiles, salary data, references, or demographic information beyond what appears in the CV. Additional data sources require a new DPIA and are prohibited without AGPO approval.
-
-### 4.4 Special Category Data
-
-CVs may inadvertently contain special category data (health information, trade union membership, political views). HireFlow's system applies a special category data filter to identify and flag records that may contain such information. Flagged records are routed for manual review only — they are not processed by the AI model.
-
-NorthStar candidates are instructed in the application portal not to include sensitive personal information beyond what is relevant to the role.
+| Data Source | Description | Frequency | Legal Basis |
+|---|---|---|---|
+| Nigeria Meteorological Agency | Rainfall, temperature, humidity by LGA | Weekly | Data sharing agreement (ref: NiMet-NCDC-2021-001) |
+| NPC Population Data | LGA-level population estimates and density | Annual | Public domain — National Population Commission |
+| Health Facility Capacity Data | Bed capacity and healthcare worker density by LGA | Annual | FMoH health facility registry |
 
 ---
 
-## 5. Data Governance Controls
+## 3. Training Data
 
-| Control | Owner | Mechanism |
-|---------|-------|----------|
-| Data processing agreement with HireFlow | Legal | Executed — includes EU AI Act Article 28 deployer obligations |
-| Candidate-facing AI disclosure | Legal + Product | Application portal notice — reviewed and approved |
-| Special category data filter | HireFlow (provider) | Technical control in v3.1 |
-| Data retention enforcement | IT / DPO | Automated deletion at 12/36 month thresholds |
-| Annual data governance review | DPO + AGPO | Included in annual system review cycle |
+### 3.1 Training Dataset Composition
+
+| Component | Description | Coverage |
+|---|---|---|
+| Historical IDSR records | Weekly disease case reports 2010–2023 | All 36 states + FCT; 774 LGAs |
+| Historical outbreak records | Confirmed outbreak events from NCDC registry | 2010–2023; all disease categories in scope |
+| Environmental data | Historical climate data matched to IDSR records | 2010–2023 |
+| Population data | Census estimates 2006 and 2023 projections | All LGAs |
+
+**Training data period:** 2010–2023 (13 years)  
+**Total training records:** Approximately 5.2 million LGA-week observations across all disease categories
+
+### 3.2 Known Training Data Limitations
+
+| Limitation | Description | Impact |
+|---|---|---|
+| Pre-2015 data quality | IDSR reporting compliance was significantly lower before 2015 — pre-2015 records are less complete | Model may underweight patterns from the 2010–2014 period |
+| Rural LGA underrepresentation | LGAs with chronically low reporting compliance contribute fewer training observations | Model may underperform in low-compliance LGAs at inference time |
+| Novel pathogen gap | Training data does not include data for pathogens that emerged after 2023 | Model will not reliably detect novel pathogen outbreaks |
+
+### 3.3 Training Data Bias Assessment
+
+A bias evaluation was conducted by Africa CDC Analytics Division prior to model v2.0 deployment (2023). Key findings:
+
+- Model performance (AUC-ROC) was **0.84** nationally
+- Performance by geopolitical zone ranged from **0.81** (Northwest) to **0.87** (Southwest)
+- The Northwest performance gap was attributed to lower average IDSR reporting compliance in Northwest states
+- No systematic bias by disease category was identified
+- **Recommendation:** Improved IDSR reporting in Northwest states would reduce the performance gap
+
+A follow-up bias evaluation is scheduled for v3.0 (2027).
 
 ---
 
-*Vendor technical documentation (HireFlow HireAssist Pro v3.1 — Data and Training Documentation) is attached as Appendix A to the full conformity pack and available on request from the AI Governance Programme Office.*
+## 4. Data Quality Management
+
+### 4.1 Automated Data Quality Checks
+
+The system performs the following automated checks on each weekly data ingestion:
+
+| Check | Threshold | Action if Failed |
+|---|---|---|
+| Reporting completeness — state level | <80% of expected LGA reports received | State flagged in dashboard; epidemiologist alerted |
+| Reporting completeness — LGA level | <70% weekly completeness over rolling 4 weeks | LGA risk score flagged as low-confidence in dashboard |
+| Anomalous data values | Case counts >3 standard deviations from historical baseline | Flagged for epidemiologist review before model ingestion |
+| Missing environmental data | Any missing climate variable for current week | Previous week's value substituted; flag displayed |
+
+### 4.2 Data Quality Reporting
+
+A weekly **Data Quality Summary** is generated alongside the risk dashboard. It reports:
+
+- Number of LGAs with low-confidence risk scores (due to reporting gaps)
+- States with reporting completeness below threshold
+- Any data anomalies identified and how they were handled
+- Environmental data completeness
+
+---
+
+## 5. Data Protection Compliance
+
+### 5.1 Personal Data Assessment
+
+The AI module processes **aggregate, non-identifiable data** at LGA level. Individual patient records are not used as model inputs. On this basis, the AI module itself does not process personal data as defined under the Nigeria Data Protection Act 2023.
+
+However, the underlying IDSR system from which aggregate data is drawn does process personal data (individual case reports). The following controls apply to that upstream processing:
+
+| Control | Description |
+|---|---|
+| Aggregation before AI ingestion | Individual case records are aggregated at LGA level before transfer to the AI module |
+| Access controls | Individual-level IDSR data is accessible only to authorised state and national epidemiology staff |
+| Data retention | Individual case records are retained for 10 years per NCDC records management policy |
+| Lawful basis | Individual case reporting is mandatory under Nigeria's Infectious Disease (Notification) Act |
+
+### 5.2 Data Sharing
+
+Aggregate AI module outputs (risk scores and forecasts) are shared with:
+
+- State Epidemiologists (state-level data only)
+- WHO AFRO (aggregate national summary, under WHO-NCDC data sharing agreement)
+- Africa CDC (aggregate national summary, under Africa CDC-NCDC data sharing agreement)
+
+No individual-level data is shared with external parties. All data sharing agreements are reviewed annually by FMoH Legal.
+
+---
+
+## 6. Data Retention
+
+| Data Type | Retention Period | Basis |
+|---|---|---|
+| Weekly AI module inputs (aggregated) | 15 years | NCDC records management policy |
+| AI module risk score outputs | 15 years | Public health accountability |
+| Model training datasets | Duration of model use + 5 years | Audit and retraining requirements |
+| Data quality logs | 5 years | Governance and audit |
+
+---
+
+*Document Version 1.0 — October 2026*  
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
