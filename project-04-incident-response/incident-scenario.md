@@ -1,92 +1,107 @@
-# Incident Description — CreditScore Pro Postcode Bias
+# Incident Scenario — MamaAlert Maternal Risk Scoring Tool
 
-**Incident ID:** AI-INC-2026-001
-**System:** NS-AI-001 · CreditScore Pro
-**Incident Type:** AI Fairness / Discriminatory Output
-**Severity:** 1 — Critical
-**Status:** Under Investigation (as of Week 2)
-**Incident Owner:** Head of Credit Risk
-**Governance Lead:** AI Governance Programme Office
-
----
-
-## Incident Summary
-
-CreditScore Pro, NorthStar's ML-based credit scoring model, has been found to systematically assign lower credit scores to loan applicants residing in postcodes that correlate with high concentrations of ethnic minority residents in the Netherlands. The effect is statistically significant and cannot be explained by differences in financial history or creditworthiness indicators alone.
-
-The disparity results in affected applicants facing higher rejection rates, higher interest rates, or lower loan limits than comparably creditworthy applicants from other postcodes. This constitutes potential indirect discrimination under EU anti-discrimination law and raises serious compliance concerns under the EU AI Act.
+**Incident Reference:** FMoH-INC-2026-001  
+**System:** FMoH-AI-003 — MamaAlert Maternal Risk Scoring Tool  
+**Incident Classification:** Critical — Patient Safety  
+**Date Detected:** 4 September 2026  
+**Date Reported to AI Review Committee:** 5 September 2026  
+**System Status:** Suspended (5 September 2026)  
 
 ---
 
-## How the Incident Was Detected
+## 1. System Background
 
-**Detection source:** Internal complaint — NorthStar data scientist
+The MamaAlert Maternal Risk Scoring Tool has been deployed by the National Primary Health Care Development Agency (NPHCDA) since March 2021 across 12 Nigerian states. The system stratifies maternal mortality risk at antenatal registration, assigning pregnant women a risk category of Low, Medium, or High, and generating a referral recommendation for Community Health Extension Workers (CHEWs).
 
-**Detection narrative:**
+The system was developed with USAID funding and technical support from DabaDoc. Its training data was drawn primarily from urban primary health care facilities in Lagos, Abuja, and Port Harcourt — the facilities with the most complete digital health records available at the time of development.
 
-On 10 March 2026, a data scientist in the ML Engineering team was conducting exploratory analysis on the CreditScore Pro model as part of the new AI governance programme's bias audit initiative. She was examining feature importance and model outputs by geographic segment when she noticed an anomaly: applicants from a cluster of postcodes in Amsterdam (predominantly the Bijlmer district) and Rotterdam (Feijenoord district) were receiving scores 35–55 points lower on average than applicants with comparable financial profiles from other postcodes.
-
-She flagged the finding to her manager, who escalated to the Head of Credit Risk on 11 March 2026.
-
-Initial internal analysis confirmed the finding. The postcode cluster corresponds closely with areas that, according to CBS (Statistics Netherlands) data, have above-average concentrations of Surinamese, Turkish, and Moroccan-Dutch residents.
-
-A preliminary assessment indicates that postcode is a significant feature in the model — it was included in training data as a "geographic risk factor" — and is acting as a proxy for ethnicity, producing indirect discrimination.
+At the time of this incident, the system was active in 12 states including Kano, Katsina, Sokoto, and Zamfara — states in Northwest Nigeria with some of Nigeria's highest maternal mortality rates and predominantly rural patient populations.
 
 ---
 
-## Scope and Impact Assessment
+## 2. Detection
 
-**Estimated affected population (preliminary):**
-- Approximately 2,400 loan applications processed in the affected postcodes in the 12 months preceding discovery
-- Of those, approximately 680 resulted in rejection decisions
-- Approximately 1,100 resulted in approval at higher interest rates or lower limits than a postcode-agnostic model would have produced
+### Initial Signal — 28 August 2026
 
-**Financial impact to affected customers (preliminary estimate):**
-- Excess interest paid due to higher risk pricing: to be calculated
-- Credit access denied: 680 applications — some proportion of which would likely have been approved under a fair model
+Following the establishment of FMoH's AI governance programme in July 2026, the newly appointed System Owner for FMoH-AI-003 — the Executive Director, NPHCDA — submitted the system's first formal System Performance Report to the AI Governance Lead as required under the new governance framework.
 
-**Regulatory implications:**
-- EU AI Act Article 73: Serious incidents involving AI systems must be reported to national authorities. This incident may meet the definition of a "serious incident" (significant impairment of a person's right to non-discrimination)
-- Dutch financial regulator (AFM): Obligation to report material conduct issues
-- GDPR: Automated decision-making challenge rights under Article 22 may have been unlawfully denied if affected applicants were not informed their decisions were AI-assisted
-- EU Equal Treatment in Access to Goods and Services Directive: Indirect discrimination in access to financial services
+The report included aggregated referral data from the 12 active states. A data analyst reviewing the report noticed an anomaly: the High Risk referral rate in the four Northwest states (Kano, Katsina, Sokoto, Zamfara) was **3.1%** — compared to **11.7%** in the four Southwest states (Lagos, Ogun, Oyo, Osun).
 
-**Reputational risk:** High. Algorithmic discrimination in financial services is a high-profile regulatory and media issue. Proactive, transparent handling of this incident is essential.
+This disparity was significant. Northwest Nigeria has materially higher rates of early marriage, grand multiparity (high number of pregnancies), anaemia, and limited access to emergency obstetric care — all established risk factors for maternal mortality. A lower High Risk classification rate in this region was the opposite of what epidemiological evidence would predict.
 
----
+### Escalation — 2 September 2026
 
-## Immediate Context
+The AI Governance Lead escalated the anomaly to the Director, eHealth Division, who instructed an immediate clinical review of recent MamaAlert outputs in the Northwest states.
 
-**Why was postcode included in the model?**
-Postcode was included as a geographic risk variable on the assumption that it reflected local economic conditions (unemployment rates, property values, local business health). This is a commonly used variable in credit risk modelling. However, in the Dutch context, postcode also encodes historical patterns of ethnic residential segregation, meaning it functions as an ethnicity proxy in practice.
+### Confirmed Incident — 4 September 2026
 
-**Was the risk known?**
-The prior risk assessment (conducted informally at build time in 2022) did not include a formal analysis of proxy discrimination risk via geographic variables. The use of postcode was not questioned. This is a finding that the governance programme should address structurally.
+Clinical reviewers at two facilities in Kano State identified two cases in which women who subsequently experienced obstetric emergencies (one severe postpartum haemorrhage, one eclampsia) had been classified as **Low Risk** by MamaAlert at their antenatal registration and were not referred for specialist care. Both women survived but required emergency intervention. Both cases were assessed by the clinical reviewers as cases where a correct High Risk classification would likely have triggered earlier specialist referral.
 
-**Is this ongoing?**
-Yes. CreditScore Pro is processing applications in real time. Every application processed during the incident period may be affected. Immediate containment actions are required.
+The AI Governance Lead classified the incident as **Critical — Patient Safety** at 17:30 on 4 September 2026.
 
 ---
 
-## Incident Severity Classification
+## 3. Immediate Impact Assessment
 
-| Dimension | Assessment |
-|-----------|-----------|
-| Harm to individuals | High — potential financial harm and discrimination against multiple protected groups |
-| Regulatory exposure | Critical — multiple potential reporting obligations |
-| Reputational risk | High |
-| Operational impact | Medium — model suspension would require manual underwriting |
-| Reversibility | Medium — past decisions can be reviewed and remediated; model can be retrained |
+### Patient Impact
+- **2 confirmed near-miss cases** in Kano State where MamaAlert misclassification contributed to delayed specialist referral
+- Clinical review of a random sample of 200 MamaAlert outputs from Northwest states found a **misclassification rate of approximately 23%** for women with established risk factors common in rural Northwest Nigeria (grand multiparity, low haemoglobin, rural LGA location)
+- Estimated **active exposure:** approximately 4,200 women currently under antenatal care in the 12 active states who received a MamaAlert risk classification in the preceding 6 months
 
-**Overall severity: 1 — Critical**
+### System Exposure
+- MamaAlert has been active in Northwest states since 2022 — **4 years of potentially biased risk classification**
+- Estimated total antenatal registrations processed by MamaAlert in Northwest states: approximately 180,000
+- The proportion of these that were incorrectly classified cannot be determined without case-by-case clinical review
 
-Severity 1 incidents require:
-- Immediate notification to AI Governance Committee (within 24 hours)
-- CRO notification within 24 hours
-- Board Risk & Audit Committee notification within 48 hours
-- Legal and Compliance immediate involvement
-- Consideration of regulatory disclosure obligations
+### Governance Exposure
+- The system operated for 4 years without a formal governance review, performance monitoring, or bias evaluation
+- No outcome tracking (actual vs predicted maternal risk) was implemented — meaning the bias was invisible until the new governance framework triggered the first performance review
+- No adverse event reporting mechanism existed prior to July 2026 — meaning near-miss cases linked to MamaAlert would not previously have been identified or investigated
 
 ---
 
-*This incident document was prepared by the AI Governance Programme Office on 12 March 2026. It is a living document updated as the investigation progresses.*
+## 4. Root Cause (Summary)
+
+Full root cause analysis is documented in `root-cause-analysis.md`. In summary:
+
+**Primary cause:** Training data bias. MamaAlert's model was trained on data from urban Southwest Nigerian health facilities. The patient population in rural Northwest Nigeria differs materially in risk factor profile, clinical presentation, and socioeconomic characteristics. The model learned to associate risk with features common in urban Southwest patients and systematically underweighted risk factors more prevalent in Northwest patients.
+
+**Contributing causes:**
+- No bias evaluation was conducted before deployment in Northwest states
+- No performance monitoring framework was implemented post-deployment
+- No outcome tracking linked MamaAlert classifications to actual maternal outcomes
+- CHEWs lacked training to identify or report cases where the AI classification appeared inconsistent with their clinical observation
+- No vendor obligation existed to monitor or report performance degradation
+
+---
+
+## 5. Stakeholders Affected
+
+| Stakeholder | Impact |
+|---|---|
+| Pregnant women in Northwest Nigeria | Direct patient safety risk — potentially incorrect risk classification and missed referrals |
+| Community Health Extension Workers (CHEWs) | Relied on MamaAlert outputs without adequate training to challenge them |
+| NPHCDA | Operational and reputational accountability for system deployment |
+| FMoH eHealth Division | Governance accountability; new governance programme's first major test |
+| DabaDoc (vendor) | Contractual and reputational exposure |
+| USAID (donor funder) | Programme accountability for funded AI system causing harm |
+| Nigeria Data Protection Commission | Regulatory interest in data processing practices linked to patient harm |
+
+---
+
+## 6. Decision to Suspend
+
+At 09:00 on 5 September 2026, the Director, eHealth Division, exercising authority under the FMoH Responsible AI Policy, suspended MamaAlert from active use across all 12 states pending the outcome of the incident investigation and root cause analysis.
+
+Suspension notification was sent to:
+- All 12 state Primary Health Care Development Agencies
+- All facility-level CHEW supervisors in active states
+- NPHCDA headquarters
+- DabaDoc (vendor)
+- USAID Nigeria health programme office
+
+CHEWs were instructed to revert to manual clinical risk assessment protocols pending system restoration or replacement.
+
+---
+
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
