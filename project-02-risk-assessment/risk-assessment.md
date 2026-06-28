@@ -1,22 +1,37 @@
-# AI Risk Assessment — TalentMatch AI
+# AI Risk Assessment — HealthLine Nigeria AI Triage Chatbot
 
-**System:** NS-AI-003 · TalentMatch AI
-**Version Assessed:** v2.3 (as deployed)
-**Assessment Date:** March 2026
-**Prepared by:** AI Governance Programme Office
-**Review Status:** Draft — pending Board endorsement
+**System:** FMoH-AI-005 — HealthLine Nigeria AI Triage Chatbot  
+**Organisation:** Federal Ministry of Health (FMoH), Nigeria  
+**Assessment Date:** June 2026  
+**Prepared by:** Victor Eze Odoh, AI Governance Researcher  
+**Review Due:** December 2026  
+**Classification:** HIGH RISK (EU AI Act standards) | NIST AI RMF Maturity: 0.0  
 
 ---
 
 ## 1. System Overview
 
-TalentMatch AI is a vendor-supplied NLP-based recruitment tool deployed by NorthStar Financial Services' HR department. It ingests candidate CVs and job descriptions, performs semantic matching, and generates a ranked shortlist of candidates with an individual fit score per applicant.
+The HealthLine Nigeria AI Triage Chatbot is a conversational AI system deployed by the FMoH eHealth Division in partnership with Helium Health. It provides symptom assessment and triage guidance to members of the public via SMS and WhatsApp, directing users to one of three care pathways:
 
-The tool was deployed in November 2023 and is currently used in all NorthStar hiring processes across all business units and geographies (primarily Germany and the Netherlands).
+- **Self-care** — manage symptoms at home
+- **Primary Care** — visit a primary health care centre
+- **Emergency** — seek immediate emergency care
 
-**Deployer:** NorthStar Financial Services (HR Department)
-**Provider:** HireFlow Technologies Ltd
-**Affected persons:** External job applicants
+The system is currently in a pilot phase covering the Federal Capital Territory (FCT), Abuja. It operates **autonomously** — no human health professional reviews individual triage recommendations before they are delivered to users.
+
+### Key Facts
+
+| Parameter | Detail |
+|---|---|
+| Deployment Status | Production Pilot — FCT Abuja |
+| User Base | General public — FCT residents |
+| Interaction Channel | SMS and WhatsApp |
+| Languages Supported | English and Nigerian Pidgin (unconfirmed) |
+| Human Oversight | None at point of decision |
+| Accountable Owner | Unassigned |
+| Adverse Event Reporting | None in place |
+| Vendor | Helium Health (Lagos) |
+| Last Governance Review | Never conducted |
 
 ---
 
@@ -24,28 +39,35 @@ The tool was deployed in November 2023 and is currently used in all NorthStar hi
 
 Risks are assessed on two dimensions:
 
-**Likelihood (1–5)**
+**Likelihood** (probability of occurrence):
 
-| Score | Definition |
-|-------|-----------|
-| 1 | Rare — unlikely to occur without deliberate action |
-| 2 | Unlikely — plausible but no evidence of occurrence |
-| 3 | Possible — could occur; some indicators present |
-| 4 | Likely — expected to occur without intervention |
-| 5 | Almost certain — evidence suggests it is occurring |
+| Score | Level | Description |
+|---|---|---|
+| 5 | Almost Certain | Expected to occur regularly under normal operation |
+| 4 | Likely | Will probably occur in most circumstances |
+| 3 | Possible | May occur in some circumstances |
+| 2 | Unlikely | Could occur but not expected |
+| 1 | Rare | May occur only in exceptional circumstances |
 
-**Impact (1–5)**
+**Impact** (severity of consequence if risk materialises):
 
-| Score | Definition |
-|-------|-----------|
-| 1 | Negligible — no material harm to individuals or organisation |
-| 2 | Minor — limited harm; recoverable |
-| 3 | Moderate — meaningful harm to individuals; reputational damage possible |
-| 4 | Significant — serious harm to individuals; regulatory consequence likely |
-| 5 | Severe — systemic harm; regulatory sanction; major reputational damage |
+| Score | Level | Description |
+|---|---|---|
+| 5 | Catastrophic | Patient death or severe irreversible harm; major public scandal |
+| 4 | Major | Serious patient harm; significant delay in emergency care; regulatory action |
+| 3 | Moderate | Patient harm requiring additional treatment; reputational damage |
+| 2 | Minor | Inconvenience to patient; minor delays in care |
+| 1 | Negligible | No meaningful impact on patient outcomes |
 
-**Risk Score = Likelihood × Impact**
-**Risk levels:** Low (1–6) · Medium (7–14) · High (15–19) · Critical (20–25)
+**Risk Rating = Likelihood × Impact**
+
+| Rating | Level | Action Required |
+|---|---|---|
+| 20–25 | Critical | Immediate action — suspend or halt system operation |
+| 15–19 | High | Urgent action within 30 days |
+| 10–14 | Medium | Action within 90 days |
+| 5–9 | Low | Monitor and review annually |
+| 1–4 | Negligible | Accept and monitor |
 
 ---
 
@@ -53,194 +75,186 @@ Risks are assessed on two dimensions:
 
 ---
 
-### RISK-001 · Proxy Discrimination via Training Data Bias
+### Risk 01 — Incorrect Emergency Triage (Under-triage)
 
-**Description:**
-TalentMatch AI was trained on historical recruitment data from HireFlow's customers. If that historical data reflects past discriminatory hiring patterns (e.g., systematic underrepresentation of women in technical roles, or candidates from certain educational backgrounds), the model will learn and replicate those patterns. The model may use surface features — writing style, school names, gap years, name inference — as proxies for protected characteristics.
+**Description:** The system classifies a patient presenting with genuine emergency symptoms (e.g. chest pain, stroke symptoms, severe bleeding, obstetric emergency) as Self-care or Primary Care. The patient delays seeking emergency treatment, resulting in preventable serious harm or death.
 
-**Affected groups:** Applicants from protected groups including women, ethnic minorities, older workers, and those with non-linear career histories.
+**Risk Category:** Patient Safety — Clinical Harm
 
-**Likelihood:** 4 — Historical hiring data routinely reflects discriminatory patterns. This is a well-documented phenomenon in NLP-based recruitment tools. No bias audit has been performed to demonstrate otherwise.
+| Assessment | Score |
+|---|---|
+| Likelihood | 4 — Likely. Symptom assessment via text input is inherently limited. Patients may not accurately describe symptoms. The model cannot perform clinical examination. Emergency presentations are frequently atypical. |
+| Impact | 5 — Catastrophic. Delayed emergency care for conditions such as stroke, myocardial infarction, or obstetric haemorrhage is a leading cause of preventable death in Nigeria. |
+| **Inherent Risk Rating** | **20 — Critical** |
 
-**Impact:** 4 — Systemic exclusion of protected-group candidates from shortlists constitutes indirect discrimination under EU employment law (Equal Treatment Directive). Regulatory and reputational consequences are significant.
+**Current Controls:** None. No human clinical review. No safety-netting advice ("if symptoms worsen, call emergency services") confirmed in system outputs.
 
-**Inherent Risk Score: 16 — HIGH**
+**Proposed Mitigations:**
+- Implement mandatory safety-netting message with every triage output — regardless of recommendation level
+- Add automatic escalation for a defined list of red-flag symptom keywords (chest pain, difficulty breathing, heavy bleeding, loss of consciousness, severe headache)
+- Introduce human clinical review for all Emergency classifications before delivery
+- Display emergency contact numbers (NCDC, state emergency lines) with every interaction
 
-**Proposed Controls:**
-- Require vendor to supply training data provenance and bias audit documentation
-- Commission independent fairness evaluation across protected characteristics (gender, age, ethnicity proxy)
-- Track shortlisting rates by demographic segment on an ongoing basis
-- Implement mandatory human review of all shortlists before candidate rejection communications are sent
-
-**Residual Risk Score (with controls): 8 — MEDIUM**
-
-**Control Owner:** HR Director + Chief People Officer
-
----
-
-### RISK-002 · Lack of Explainability for Adverse Decisions
-
-**Description:**
-Candidates who are not shortlisted cannot currently receive a meaningful explanation for why they were rejected. The system produces a fit score but does not provide human-interpretable reasoning. Under the EU AI Act Article 13 and Article 86 of the GDPR (right to explanation for automated decisions), affected individuals have the right to understand the basis of decisions that significantly affect them.
-
-**Likelihood:** 5 — The system is currently in production with no explanation capability. Every rejection is currently unexplainable beyond a score.
-
-**Impact:** 3 — Individual harm (applicants cannot appeal or understand rejection); regulatory risk if challenged; reputational risk if publicised.
-
-**Inherent Risk Score: 15 — HIGH**
-
-**Proposed Controls:**
-- Require vendor to implement or expose an explanation API that provides plain-language reasons for low scores
-- Implement human review as the decision point — the AI shortlist is an input, not the decision
-- Update candidate communications to reflect that human judgment, not automated decision-making, determines rejection
-- Review candidate-facing privacy notice to ensure it reflects current automated processing practices
-
-**Residual Risk Score (with controls): 6 — LOW**
-
-**Control Owner:** HR Director + Legal/Compliance
+**Residual Risk Rating (post-mitigation):** 12 — Medium  
+**Residual Likelihood:** 3 | **Residual Impact:** 4
 
 ---
 
-### RISK-003 · Absence of Human Oversight in Rejection Workflow
+### Risk 02 — Algorithmic Bias Against Rural and Northern Nigerian Users
 
-**Description:**
-Current workflow: HR coordinators upload CVs → TalentMatch generates ranked shortlist → candidates below a defined threshold score receive automated rejection emails. There is no mandatory human review step before rejections are sent. The AI system is effectively making final employment decisions autonomously.
+**Description:** The model's training data is unconfirmed but likely skewed toward urban, educated, English-speaking users. Performance may systematically degrade for users in rural FCT communities, users communicating in Nigerian Pidgin or local languages, or users with lower health literacy who describe symptoms in non-clinical terms.
 
-Under EU AI Act Article 14, high-risk AI systems must enable human oversight, including the ability for humans to override outputs and refrain from using outputs. The current workflow does not meet this requirement.
+**Risk Category:** Health Equity — Discriminatory Outcomes
 
-**Likelihood:** 5 — This is the current workflow as documented.
+| Assessment | Score |
+|---|---|
+| Likelihood | 4 — Likely. This is a documented pattern in AI health tools deployed in African contexts without localised training data. |
+| Impact | 4 — Major. Systematic misclassification of a specific population group constitutes discriminatory harm and undermines the public health purpose of the tool. |
+| **Inherent Risk Rating** | **16 — High** |
 
-**Impact:** 4 — Autonomous rejection of candidates by AI constitutes a high-risk AI system making binding decisions without human oversight. Direct EU AI Act non-compliance. Potential discrimination and employment law liability.
+**Current Controls:** None. No bias evaluation has been conducted. No multilingual support confirmed.
 
-**Inherent Risk Score: 20 — CRITICAL**
+**Proposed Mitigations:**
+- Commission independent bias evaluation disaggregated by geography, language, and literacy level
+- Require vendor to disclose training data demographic composition
+- Pilot multilingual support (Hausa, Igbo, Yoruba, Pidgin) before national rollout
+- Implement performance monitoring disaggregated by user geography and language
 
-**Proposed Controls:**
-- Immediately implement a mandatory human review gate: HR coordinators must review and approve all rejection decisions before they are communicated to candidates
-- The AI shortlist should be treated as a recommendation, not a decision
-- Define the criteria HR coordinators use to override the AI's ranking
-- Log all instances where the human decision diverges from the AI recommendation (provides model feedback data)
-
-**Residual Risk Score (with controls): 8 — MEDIUM**
-
-**Control Owner:** HR Director
-**Timeline:** Immediate — this control must be implemented before next hiring cycle
-
----
-
-### RISK-004 · Training Data Provenance and Data Quality
-
-**Description:**
-HireFlow Technologies Ltd has not supplied documentation of the training data used to build TalentMatch AI's model. NorthStar cannot confirm what data was used, whether it was lawfully obtained, whether it contains NorthStar's own historical candidates (which would raise separate GDPR concerns), or whether it is representative of the applicant pool NorthStar actually receives.
-
-**Likelihood:** 4 — Vendor has not provided this information despite deployment. Gaps are probable.
-
-**Impact:** 3 — Data quality issues may degrade model performance; unlawfully sourced training data creates GDPR liability; non-representative training data compounds bias risk.
-
-**Inherent Risk Score: 12 — MEDIUM**
-
-**Proposed Controls:**
-- Issue formal information request to HireFlow: training data sources, processing basis, data subjects, fairness testing methodology, model card
-- Include EU AI Act Article 10 compliance requirements in next contract renewal
-- If vendor cannot provide adequate documentation, treat as material contract breach and initiate alternative procurement assessment
-
-**Residual Risk Score (with controls): 4 — LOW**
-
-**Control Owner:** Procurement + Legal
+**Residual Risk Rating (post-mitigation):** 9 — Low  
+**Residual Likelihood:** 3 | **Residual Impact:** 3
 
 ---
 
-### RISK-005 · Scope Creep Beyond Intended Purpose
+### Risk 03 — Absence of Accountable Owner
 
-**Description:**
-TalentMatch AI was procured for initial CV screening and shortlisting. There is a risk that over time its outputs are used beyond this intended scope — for example, informing interview question selection, influencing salary offer decisions, or being repurposed for internal mobility and promotion decisions. Each expansion of scope may carry different risk profiles and require separate assessment.
+**Description:** No individual within FMoH has been formally designated as the accountable owner for this system. If a patient is harmed, there is no defined process for accountability, investigation, or response. The system is effectively operating without a responsible principal.
 
-**Likelihood:** 3 — Scope creep is common with convenient AI tools. No formal use-case boundary policy exists.
+**Risk Category:** Governance — Accountability Gap
 
-**Impact:** 3 — Expanded use in promotion decisions would constitute a different high-risk use case requiring separate conformity assessment.
+| Assessment | Score |
+|---|---|
+| Likelihood | 5 — Almost Certain. The gap is already confirmed — no owner is currently assigned. |
+| Impact | 4 — Major. In the event of patient harm, the absence of an accountable owner exposes FMoH to reputational, legal, and regulatory consequences with no defined response capability. |
+| **Inherent Risk Rating** | **20 — Critical** |
 
-**Inherent Risk Score: 9 — MEDIUM**
+**Current Controls:** None.
 
-**Proposed Controls:**
-- Document the permitted use scope in the system's governance record
-- Require a new governance review and risk assessment before any expansion of the system's use
-- HR Director to attest annually to permitted scope adherence
+**Proposed Mitigations:**
+- Immediately designate a named Senior Health Officer as System Owner with documented accountability
+- Define the System Owner's responsibilities: performance monitoring, incident response, vendor management, and annual review
+- Include AI system accountability in FMoH eHealth Division's performance framework
 
-**Residual Risk Score (with controls): 3 — LOW**
-
-**Control Owner:** HR Director
+**Residual Risk Rating (post-mitigation):** 8 — Low  
+**Residual Likelihood:** 1 | **Residual Impact:** 4 (harm potential remains; accountability risk eliminated)
 
 ---
 
-### RISK-006 · Vendor Dependency and Continuity Risk
+### Risk 04 — Vendor Accountability Gap
 
-**Description:**
-NorthStar's recruitment workflow is dependent on a single vendor (HireFlow Technologies Ltd). If the vendor ceases to operate, withdraws the product, or makes changes to the model that degrade performance, NorthStar has no fallback capability.
+**Description:** The current contract with Helium Health does not contain AI-specific obligations — no model performance standards, no incident reporting requirements, no data breach notification timelines, and no liability provisions for AI recommendation errors. If the system causes harm, FMoH has no contractual basis to hold the vendor accountable.
 
-**Likelihood:** 2 — Vendor is an established SaaS provider but is a relatively small company.
+**Risk Category:** Legal and Contractual — Vendor Risk
 
-**Impact:** 2 — Disruption to recruitment workflow; manageable.
+| Assessment | Score |
+|---|---|
+| Likelihood | 5 — Almost Certain. Confirmed — no AI-specific clauses in current contract. |
+| Impact | 3 — Moderate. Financial and reputational exposure for FMoH; limited recourse against vendor. |
+| **Inherent Risk Rating** | **15 — High** |
 
-**Inherent Risk Score: 4 — LOW**
+**Current Controls:** None specific to AI performance or safety.
 
-**Proposed Controls:**
-- Ensure contract includes data portability and export rights
-- Maintain capability to revert to manual CV screening during any vendor disruption
-- Include model change notification requirements in contract
+**Proposed Mitigations:**
+- Renegotiate vendor contract to include: model performance SLAs, incident reporting obligations (within 24 hours of identified harm), training data disclosure, bias audit requirements, and liability provisions
+- Require vendor to provide quarterly performance reports with precision/recall metrics
+- Include right to audit and right to terminate clauses
 
-**Residual Risk Score (with controls): 2 — LOW**
+**Residual Risk Rating (post-mitigation):** 6 — Low  
+**Residual Likelihood:** 2 | **Residual Impact:** 3
 
-**Control Owner:** Procurement
+---
+
+### Risk 05 — Absence of AI Disclosure to Users
+
+**Description:** Users interacting with the HealthLine chatbot may not be clearly informed they are receiving advice from an AI system rather than a qualified health professional. This creates a transparency failure and may cause users to place inappropriate confidence in AI recommendations.
+
+**Risk Category:** Transparency — User Rights
+
+| Assessment | Score |
+|---|---|
+| Likelihood | 3 — Possible. Disclosure status unconfirmed — may not be prominently displayed. |
+| Impact | 3 — Moderate. Users who believe they are speaking with a clinician may not seek further care when appropriate. |
+| **Inherent Risk Rating** | **9 — Low** |
+
+**Current Controls:** Unconfirmed — disclosure status not documented.
+
+**Proposed Mitigations:**
+- Implement mandatory AI disclosure at the start of every interaction in plain language: *"This is an automated health information service, not a doctor. Always seek professional medical advice for serious concerns."*
+- Display disclosure in English and Nigerian Pidgin as a minimum
+- Log disclosure delivery for audit purposes
+
+**Residual Risk Rating (post-mitigation):** 4 — Negligible  
+**Residual Likelihood:** 1 | **Residual Impact:** 3
+
+---
+
+### Risk 06 — Data Protection Non-Compliance (NDPA 2023)
+
+**Description:** The system collects sensitive health data (symptoms, age, location) from users via WhatsApp and SMS. It is unclear whether data processing complies with Nigeria's Data Protection Act 2023, which requires lawful basis for processing sensitive personal data, user consent, and data minimisation.
+
+**Risk Category:** Legal — Data Protection
+
+| Assessment | Score |
+|---|---|
+| Likelihood | 3 — Possible. NDPA 2023 compliance has not been confirmed for this system. |
+| Impact | 3 — Moderate. Regulatory action by the Nigeria Data Protection Commission; reputational damage. |
+| **Inherent Risk Rating** | **9 — Low** |
+
+**Current Controls:** Unknown — data governance documentation not available.
+
+**Proposed Mitigations:**
+- Conduct NDPA 2023 compliance review with FMoH legal team
+- Implement explicit consent mechanism at start of each interaction
+- Define and enforce data retention limits for symptom data
+- Confirm data storage location and security standards with vendor
+
+**Residual Risk Rating (post-mitigation):** 4 — Negligible  
+**Residual Likelihood:** 1 | **Residual Impact:** 3
 
 ---
 
 ## 4. Risk Summary Matrix
 
-| Risk ID | Risk | Inherent Score | Level | Residual Score | Level |
-|---------|------|---------------|-------|----------------|-------|
-| RISK-001 | Proxy discrimination via training data bias | 16 | High | 8 | Medium |
-| RISK-002 | Lack of explainability for adverse decisions | 15 | High | 6 | Low |
-| RISK-003 | Absence of human oversight in rejection workflow | 20 | Critical | 8 | Medium |
-| RISK-004 | Training data provenance and data quality | 12 | Medium | 4 | Low |
-| RISK-005 | Scope creep beyond intended purpose | 9 | Medium | 3 | Low |
-| RISK-006 | Vendor dependency and continuity risk | 4 | Low | 2 | Low |
+| Risk | Category | Inherent Rating | Inherent Level | Residual Rating | Residual Level |
+|---|---|---|---|---|---|
+| R01 — Incorrect Emergency Triage | Patient Safety | 20 | Critical | 12 | Medium |
+| R02 — Algorithmic Bias | Health Equity | 16 | High | 9 | Low |
+| R03 — No Accountable Owner | Governance | 20 | Critical | 8 | Low |
+| R04 — Vendor Accountability Gap | Legal/Contractual | 15 | High | 6 | Low |
+| R05 — No AI Disclosure | Transparency | 9 | Low | 4 | Negligible |
+| R06 — NDPA Non-Compliance | Data Protection | 9 | Low | 4 | Negligible |
 
 ---
 
-## 5. Residual Risk Position
+## 5. Overall Risk Position and Recommendation
 
-With all proposed controls in place, the residual risk position is assessed as **MEDIUM**. Two risks (RISK-001 and RISK-003) remain at medium residual risk because:
+**Current inherent risk position: CRITICAL**
 
-- Bias audit results are not yet known — controls reduce likelihood but cannot eliminate the risk until the audit is complete
-- Human oversight controls reduce but do not eliminate the risk of discriminatory outcomes — ongoing monitoring is required
+The HealthLine Nigeria AI Triage Chatbot is currently operating with two Critical-rated risks (R01 and R03) and two High-rated risks (R02 and R04). The combination of autonomous clinical decision-making, zero human oversight, no accountable owner, and unvalidated performance on the Nigerian population creates an unacceptable risk profile.
 
-**Acceptance recommendation:** Conditional. The system should not continue in its current configuration. It may continue to operate **only** if the following minimum controls are implemented immediately:
+**Recommendation: Conditional Suspension**
 
-1. Mandatory human review of all shortlisting and rejection decisions (RISK-003)
-2. Updated candidate-facing communications removing references to automated decision-making as the basis for rejection (RISK-002)
-3. Formal information request to HireFlow Technologies Ltd for training data documentation (RISK-004)
+The system should be suspended from autonomous operation until the following minimum conditions are met:
 
-A full conformity assessment and independent bias audit must be completed within 90 days. If controls 1–3 cannot be implemented before the next hiring cycle, the system should be suspended pending remediation.
+1. A named System Owner is appointed within FMoH eHealth Division
+2. Safety-netting messages and red-flag escalation protocols are implemented
+3. Human clinical review is introduced for all Emergency classifications
+4. Vendor contract is updated with AI-specific performance and accountability clauses
+5. AI disclosure is confirmed and documented
 
----
-
-## 6. Recommended Human Oversight Model
-
-Human oversight for TalentMatch AI should be structured as follows:
-
-**Minimum viable oversight (immediate):**
-- HR coordinator reviews AI-generated shortlist and approves or modifies it before any candidate communication
-- HR coordinator records whether they accepted or modified the AI recommendation and the reason for any modification
-- No rejection email is sent without HR coordinator approval
-
-**Enhanced oversight (within 60 days):**
-- Hiring manager reviews shortlist in addition to HR coordinator for roles above Grade 5
-- Monthly review of shortlisting rate by demographic indicator (where data is available)
-- Quarterly report to HR Director on AI recommendation acceptance/override rate and patterns
-
-**Governance oversight (within 90 days):**
-- AI Governance Committee receives quarterly summary of TalentMatch AI performance and fairness metrics
-- Annual review of system risk assessment by AI Governance Programme Office
+Upon meeting these conditions, the system may resume operation under a formal governance framework with quarterly review.
 
 ---
 
-*This assessment is point-in-time. Risk ratings should be reviewed following any material change to the system, its use, or the regulatory environment.*
+*This risk assessment should be reviewed upon any material change to the system's design, deployment scope, or operating context.*
+
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
