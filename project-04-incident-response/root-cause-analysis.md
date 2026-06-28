@@ -1,135 +1,193 @@
-# Root Cause Analysis — AI-INC-2026-001
+# Root Cause Analysis — FMoH-INC-2026-001
 
-**Incident:** CreditScore Pro Postcode Bias
-**RCA Status:** Final
-**Prepared by:** AI Governance Programme Office + ML Engineering
-**Review Date:** 15 May 2026
-**Approved by:** AI Governance Committee
+**Incident:** MamaAlert Maternal Risk Scoring Tool — Systematic Misclassification  
+**System:** FMoH-AI-003  
+**RCA Lead:** Independent Clinical AI Expert (engaged by AI Review Committee)  
+**RCA Completed:** 3 October 2026  
+**Approved by:** AI Review Committee  
 
 ---
 
 ## 1. Incident Summary
 
-CreditScore Pro assigned systematically lower credit scores to applicants from postcodes correlating with ethnic minority populations in Amsterdam and Rotterdam, constituting indirect discrimination. The bias was present from model go-live (March 2022) and was active for approximately four years before detection.
+The MamaAlert Maternal Risk Scoring Tool was found to systematically misclassify pregnant women in rural Northwest Nigerian communities as Low or Medium maternal mortality risk when clinical evidence indicated High Risk. The misclassification resulted in missed specialist referrals, contributing to at least two confirmed near-miss obstetric emergencies and a further 17 cases under clinical assessment.
+
+The system was deployed across 12 states from 2021–2026 without a formal governance review, bias evaluation, or post-deployment performance monitoring framework. The bias was undetected for approximately four years.
 
 ---
 
-## 2. Root Cause Analysis Method
+## 2. RCA Methodology
 
-This RCA uses the **5 Whys** method to trace the incident to its root causes, followed by a contributing factors analysis to capture systemic issues. The goal is not to assign individual blame but to identify the conditions that allowed the failure to occur and persist.
+This analysis applies the **5 Whys methodology** combined with an **Ishikawa (fishbone) causal analysis** to identify the root cause, contributing causes, and systemic enablers of the incident.
+
+The investigation drew on:
+- DabaDoc training data composition report
+- Model architecture and feature importance documentation
+- Clinical review of 200 sampled MamaAlert outputs from Northwest states
+- Interviews with CHEW supervisors in Kano and Katsina states
+- Review of the original programme design documents (2020)
+- Historical outcome data from NHMIS (partial)
 
 ---
 
 ## 3. Five Whys Analysis
 
-**Problem statement:** CreditScore Pro produced discriminatory credit scores for applicants from specific postcodes, resulting in higher rejection rates and inflated interest rates for protected groups.
+**Why did MamaAlert misclassify high-risk pregnancies in Northwest Nigeria?**
+
+> Because the model assigned insufficient weight to risk factors that are disproportionately prevalent in rural Northwest Nigerian patients — including grand multiparity, severe anaemia, rural LGA location, and absence of prior facility-based antenatal care.
+
+**Why did the model underweight these risk factors?**
+
+> Because the model was trained on data from urban Southwest Nigerian health facilities (Lagos, Abuja, Port Harcourt), where these risk factors are less prevalent. The model learned risk associations from the population it was trained on — which did not represent the population it was later deployed to serve.
+
+**Why was the model trained only on urban Southwest Nigerian data?**
+
+> Because at the time of development (2019–2020), digital health records with sufficient completeness for model training were only reliably available from urban tertiary and secondary facilities. Rural Northwest facilities had incomplete or paper-based records. No deliberate decision was made to exclude Northwest data — it was structurally unavailable.
+
+**Why was the model deployed in Northwest states despite being trained on non-representative data?**
+
+> Because no formal bias evaluation was required or conducted before deployment. The programme's governance framework (designed by USAID and DabaDoc in 2020) did not include a requirement to validate model performance across geographic or demographic subgroups before rollout. No FMoH governance standard existed at the time to mandate such evaluation.
+
+**Why was the bias not identified after deployment?**
+
+> Because no post-deployment performance monitoring framework was in place. No outcome tracking linked MamaAlert classifications to actual maternal outcomes. No mechanism existed for CHEWs to systematically report cases where the AI classification appeared inconsistent with their clinical assessment. The system produced outputs that were accepted without audit until the new governance framework triggered the first formal performance review in September 2026.
 
 ---
 
-**Why 1: Why did the model produce discriminatory scores?**
+## 4. Root Cause
 
-Because postcode was included as a feature and acted as a statistically significant proxy for ethnicity, depressing scores for applicants in historically ethnic-minority-concentrated areas.
+**Root Cause: Training data not representative of deployment population**
 
----
+MamaAlert's model was trained on a dataset that was 94% urban Southwest Nigerian facility data. The patient population in rural Northwest Nigeria differs materially in risk factor prevalence, clinical presentation, and socioeconomic profile. The model systematically underestimated risk for patients whose risk profile fell outside the distribution it was trained on.
 
-**Why 2: Why was postcode included as a feature without recognising its discriminatory potential?**
-
-Because the model development team conducted no formal proxy analysis of the features used. Postcode was treated as a legitimate geographic risk variable (reflecting local economic conditions) without analysis of whether it also encoded protected characteristics.
+This is a training data bias of the type known as **distribution shift** or **covariate shift** — the statistical properties of the deployment population differ from those of the training population, causing the model to perform poorly in the deployment context.
 
 ---
 
-**Why 3: Why was no proxy analysis conducted?**
+## 5. Contributing Causes
 
-Because there was no requirement to do so. At the time of model development (2021–2022), NorthStar had no formal AI governance process, no fairness evaluation requirement, and no standard for pre-deployment bias assessment. The data science team followed standard credit risk modelling practice, which at the time did not include systematic fairness auditing.
+### Contributing Cause 1 — No Pre-Deployment Bias Evaluation
 
----
+No bias evaluation was conducted before MamaAlert was deployed in Northwest states. A geographic and demographic performance evaluation would have identified the training data gap and the prediction accuracy disparity between Southwest and Northwest patient populations before deployment.
 
-**Why 4: Why was there no fairness evaluation requirement?**
-
-Because NorthStar had no Responsible AI Policy or AI governance programme. The model was developed and deployed in the absence of any structured governance framework. There was no mechanism for identifying the need for fairness assessment or requiring it.
+**What should have happened:** A mandatory bias evaluation assessing model performance across geographic zones, urbanicity, age groups, and parity levels should have been conducted and reviewed before state-level rollout.
 
 ---
 
-**Why 5: Why did the absence of a governance framework go unaddressed for four years?**
+### Contributing Cause 2 — No Post-Deployment Outcome Tracking
 
-Because AI governance was not treated as a priority until regulatory pressure (the EU AI Act) created urgency. Before 2026, AI risk was managed informally within individual teams without cross-functional oversight, escalation paths, or executive accountability. There was no central inventory, no review process, and no monitoring framework that would have detected ongoing bias.
+No system was implemented to link MamaAlert risk classifications to actual maternal outcomes. Without outcome tracking, it was impossible to detect whether the model's predictions were accurate or to identify whether specific patient subgroups were being systematically misclassified.
 
-**Root cause:** Absence of an enterprise AI governance programme. The discriminatory model feature was a symptom; the root cause was the absence of the structures, processes, and accountability that would have prevented its inclusion, required its testing, and detected its effects.
-
----
-
-## 4. Contributing Factors
-
-### CF-1: Training Data Encoding Historical Discrimination
-
-The model was trained on NorthStar's historical lending data (2015–2021). This data reflected lending decisions made before AI — and those decisions may themselves have been influenced by the geographic biases present in traditional credit assessment. Training on historically discriminatory outcomes can embed that discrimination into a model even without intent.
-
-**Implication:** Retrospective datasets are not neutral. Governance frameworks must require assessment of whether training data encodes historical patterns that would be unacceptable if explicitly designed in.
+**What should have happened:** An outcome tracking system — linking antenatal MamaAlert classifications to delivery outcomes recorded in DHIS2 — should have been implemented from the outset. Quarterly performance reports should have compared predicted risk distributions to actual adverse outcome rates by state and LGA.
 
 ---
 
-### CF-2: Postcode as a Proxy — A Known Problem Ignored
+### Contributing Cause 3 — CHEWs Lacked Capacity to Challenge AI Outputs
 
-The risk of using geographic variables as ethnicity proxies in credit models is a well-documented concern in academic literature, regulatory guidance (including FCA and ECB), and NGO reporting. The data science team was not aware of this literature and had not been trained to look for proxy discrimination risks.
+Community Health Extension Workers were trained to enter patient data and act on MamaAlert outputs. They were not trained to recognise when an AI classification appeared inconsistent with their clinical observation, or to report such discrepancies through a formal channel. In effect, the human oversight layer was nominal rather than substantive.
 
-**Implication:** ML practitioners need AI governance training that covers fairness concepts, not just technical skills. Governance is not just a policy function.
-
----
-
-### CF-3: No Post-Deployment Monitoring for Bias
-
-Once deployed, CreditScore Pro's performance was monitored for accuracy (default prediction accuracy, AUC) but not for fairness metrics. Demographic parity, equalised odds, and disparate impact measures were not tracked. The bias was therefore invisible to the operational monitoring regime.
-
-**Implication:** Monitoring frameworks for AI systems must include fairness metrics, not just accuracy metrics.
+**What should have happened:** CHEWs should have received training on the limitations of AI risk scoring, including explicit guidance to escalate cases where the AI classification appeared inconsistent with their clinical assessment. A formal discrepancy reporting mechanism should have been established.
 
 ---
 
-### CF-4: No Mechanism for Affected Individuals to Surface Issues
+### Contributing Cause 4 — Vendor Contract Did Not Include Performance Obligations
 
-Between 2022 and 2026, some applicants who were rejected may have suspected unfairness. But there was no accessible mechanism for affected applicants to raise a concern specifically about AI-driven decisions, and no requirement to inform applicants that an AI system was involved in their assessment. Their concerns, if any, entered the general complaints process without flagging as an AI fairness issue.
+The contract with DabaDoc contained no AI-specific performance obligations — no accuracy benchmarks, no bias evaluation requirements, no incident reporting obligations, and no requirement to disclose training data composition. DabaDoc had no contractual obligation to monitor, report, or remediate performance issues post-deployment.
 
-**Implication:** Customer-facing AI systems need accessible mechanisms for affected individuals to challenge AI-assisted decisions and a process for routing those challenges to people who can assess them.
-
----
-
-### CF-5: Delayed Governance Programme Establishment
-
-NorthStar's AI governance programme was established in January 2026 — triggered by the EU AI Act entering application for high-risk systems. Had the programme been established earlier (even in 2023, following broader industry signals), the bias audit that detected this incident would have occurred two to three years sooner. Approximately 2,500 fewer applications would have been affected.
-
-**Implication:** Proactive governance, not compliance-driven governance, produces better outcomes. Waiting for regulation to require governance is not the same as managing risk.
+**What should have happened:** The vendor contract should have required DabaDoc to: disclose training data composition; conduct and share bias evaluations; provide quarterly performance reports; report identified performance issues within 24 hours; and cooperate with independent audits.
 
 ---
 
-## 5. Corrective Action Plan
+### Contributing Cause 5 — No FMoH AI Governance Framework (Pre-July 2026)
 
-| Action | Root Cause / Contributing Factor Addressed | Owner | Due Date | Status |
-|--------|------|-------|---------|--------|
-| Remove postcode feature and retrain CreditScore Pro | Direct remediation | ML Engineering | 30 April 2026 | Complete |
-| Mandate pre-deployment proxy analysis for all geographic and demographic features in future models | CF-1, CF-2 | ML Engineering + AGPO | 30 June 2026 | In progress |
-| Implement fairness metrics (demographic parity, disparate impact) in all credit model monitoring dashboards | CF-3 | ML Engineering | 30 June 2026 | In progress |
-| Develop and deliver AI fairness training for all ML Engineering and data science staff | CF-2 | AGPO + HR | 31 July 2026 | Not started |
-| Implement customer-facing AI disclosure and challenge mechanism for all credit decisions | CF-4 | Legal + Product + Customer Experience | 31 August 2026 | Not started |
-| Update AUCR template and Enhanced Review criteria to mandate proxy analysis for any feature that could encode protected characteristics | Root cause | AGPO | 30 June 2026 | In progress |
-| Conduct retrospective proxy analysis on all other production ML models (NS-AI-002, NS-AI-005) | CF-1, CF-3 | ML Engineering | 31 August 2026 | Not started |
-| Include fairness monitoring requirements in standard vendor AI contract terms | CF-3 | Legal + Procurement | 31 July 2026 | Not started |
+Prior to the establishment of FMoH's AI governance programme in July 2026, no institutional framework existed to require bias evaluations, mandate performance monitoring, or establish accountability for AI system outcomes. The absence of governance infrastructure meant that none of the controls that would have detected or prevented this incident were in place.
+
+**What should have happened:** An AI governance framework — including minimum standards for pre-deployment evaluation, post-deployment monitoring, and incident reporting — should have been in place before any AI system was deployed in a clinical context.
 
 ---
 
-## 6. Lessons Learned
+## 6. Ishikawa Causal Analysis Summary
 
-**For the AI governance programme:**
-
-1. **Governance programmes must cover existing systems, not just new ones.** The AI governance programme was established in January 2026 but initially focused on new use cases going forward. This incident shows that the most significant governance gaps may be in systems already in production. A retrospective audit programme should be a standing element of the governance programme.
-
-2. **Monitoring frameworks must include fairness metrics from day one.** Accuracy alone is not enough. Every AI system that affects individuals should have defined fairness metrics tracked alongside performance metrics.
-
-3. **Proxy discrimination is not obvious.** Postcode seems like a legitimate variable. The discriminatory effect was not visible to the team that built the model. Governance frameworks must include explicit prompts to look for proxy effects — it is not enough to prohibit intentional discrimination.
-
-4. **Speed of detection determines scale of harm.** This bias was active for four years. An earlier governance programme — or even periodic fairness monitoring — would have detected it sooner. The corrective action plan should prioritise building detection capability.
-
-5. **Regulatory compliance and good governance are not the same thing.** The EU AI Act did not require a fairness audit of this model in 2022. A proactive governance approach would have. Governance programmes should aspire to better-than-minimum standards.
+```
+                    PATIENT MISCLASSIFICATION
+                           (Effect)
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+   TRAINING DATA          PROCESS               GOVERNANCE
+        │                     │                     │
+ 94% urban SW data    No bias evaluation     No FMoH AI policy
+ No NW representation No outcome tracking    No vendor obligations
+ Distribution shift   Nominal CHEW oversight No monitoring mandate
+```
 
 ---
 
-*RCA approved by AI Governance Committee — 15 May 2026*
-*Distribution: AI Governance Committee · Board Risk & Audit Committee · AFM (summary version) · Internal audit*
+## 7. Timeline of Missed Opportunities
+
+| Year | Event | Missed Opportunity |
+|---|---|---|
+| 2019–2020 | MamaAlert developed using urban SW Nigerian data | Bias evaluation not required; geographic representation not assessed |
+| 2021 | MamaAlert deployed in Southwest states | No performance baseline established |
+| 2022 | Deployment extended to Northwest states | No geographic performance validation before Northwest rollout |
+| 2022–2026 | System active in 12 states | No outcome tracking; no performance monitoring; no CHEW reporting mechanism |
+| Aug 2026 | First System Performance Report submitted under new governance framework | Anomaly detected — referral rate disparity identified |
+| Sep 2026 | Clinical review confirms misclassification and near-miss cases | Incident confirmed and system suspended |
+
+---
+
+## 8. Corrective Action Plan
+
+### Immediate Actions (Complete)
+- ✅ System suspended across all 12 states
+- ✅ Manual clinical protocols reinstated
+- ✅ Incident investigation initiated
+- ✅ Vendor required to preserve all logs and model documentation
+
+### Short-Term Actions (Target: December 2026)
+
+| Action | Owner | Target |
+|---|---|---|
+| Model retrained incorporating Northwest Nigerian clinical data | DabaDoc | Nov 2026 |
+| Independent bias evaluation of retrained model | Independent Evaluator | Nov 2026 |
+| CHEW capacity building programme delivered across 12 states | eHealth Division / NPHCDA | Nov 2026 |
+| Outcome tracking system implemented in DHIS2 | NHMIS / eHealth Division | Nov 2026 |
+| Vendor contract renegotiated with AI-specific clauses | FMoH Legal / Procurement | Oct 2026 |
+| Redeployment approved by Permanent Secretary (conditional on bias evaluation results) | Permanent Secretary | Dec 2026 |
+
+### Systemic Actions (Target: January 2027)
+
+| Action | Owner | Target |
+|---|---|---|
+| FMoH Responsible AI Policy updated — mandatory pre-deployment bias evaluation added as gate condition for all High Risk AI systems | AI Governance Lead | Jan 2027 |
+| Bias evaluation methodology standardised and published for use across FMoH AI portfolio | AI Governance Lead | Jan 2027 |
+| All existing High Risk AI systems scheduled for retrospective bias evaluation | AI Review Committee | Jan 2027 |
+| Lessons learned communicated to USAID Nigeria, WHO Nigeria, and Africa CDC | Director, eHealth Division | Jan 2027 |
+| Incident published as anonymised case study in FMoH Annual AI Governance Report | Director, eHealth Division | Jan 2027 |
+
+---
+
+## 9. Lessons Learned
+
+**Lesson 1 — Geographic representation in training data is not optional for national health AI systems.**  
+Nigeria's health system serves populations with materially different disease profiles, risk factors, and socioeconomic characteristics across its six geopolitical zones. Any AI system deployed nationally must be evaluated for performance across these zones before deployment — not after.
+
+**Lesson 2 — Nominal human oversight is not meaningful human oversight.**  
+CHEWs were present at every interaction but lacked the training and authority to challenge AI outputs. Governance frameworks must ensure that human reviewers have the capacity, training, and formal authority to override AI recommendations — otherwise the oversight is decoration.
+
+**Lesson 3 — Outcome tracking is not optional for clinical AI systems.**  
+An AI system that makes clinical recommendations but does not track whether those recommendations led to good or bad outcomes cannot be improved, cannot be held accountable, and cannot detect its own failures. Outcome tracking must be a deployment requirement, not an afterthought.
+
+**Lesson 4 — Governance frameworks detect what monitoring systems cannot.**  
+This incident was identified not by clinical surveillance or patient complaints, but by the first formal performance report submitted under FMoH's new governance framework. Governance infrastructure — registers, review cycles, performance reporting — is the early warning system for AI failures.
+
+**Lesson 5 — Vendor contracts must reflect AI risk.**  
+A vendor supplying an AI system that influences clinical decisions must have contractual obligations proportionate to that risk. Standard procurement contracts are not designed for AI. AI-specific clauses — performance SLAs, bias evaluation obligations, incident reporting, data disclosure, and liability provisions — must be standard in every FMoH AI procurement.
+
+---
+
+*Approved by the AI Review Committee, Federal Ministry of Health, Nigeria.*  
+*3 October 2026*
+
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
+
