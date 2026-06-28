@@ -1,124 +1,100 @@
 # Governance Review Memo
 
-**To:** Chief Executive Officer · Board Risk & Audit Committee
-**From:** AI Governance Programme Office
-**Subject:** TalentMatch AI — Governance Review and Deployment Decision
-**Classification:** Confidential
-**Date:** March 2026
+**TO:** Honourable Minister of Health, Federal Republic of Nigeria  
+**FROM:** Director, eHealth Division, Federal Ministry of Health  
+**DATE:** June 2026  
+**RE:** HealthLine Nigeria AI Triage Chatbot — Governance Review and Ministerial Decision Request  
+**CLASSIFICATION:** Sensitive — For Ministerial Decision  
 
 ---
 
-## Purpose
+## 1. Purpose
 
-This memo presents the outcome of a governance review of TalentMatch AI (NS-AI-003), NorthStar's AI-assisted recruitment tool. The review was triggered by the EU AI Act classification exercise completed in February 2026, which identified this system as high-risk with no conformity assessment in place.
-
-The Board is asked to note the findings, approve the recommended remediation actions, and provide direction on the system's operational status during the remediation period.
+This memo presents the findings of a formal governance review of the HealthLine Nigeria AI Triage Chatbot (FMoH-AI-005), currently in pilot deployment in the Federal Capital Territory. It requests a Ministerial decision on the system's continued operation pending implementation of minimum governance controls.
 
 ---
 
-## Executive Summary
+## 2. Background
 
-TalentMatch AI has been in production since November 2023. It screens CVs and generates candidate shortlists used in all NorthStar hiring decisions across Germany and the Netherlands.
+The HealthLine Nigeria AI Triage Chatbot was deployed in March 2024 by the eHealth Division in partnership with Helium Health (Lagos) as part of FMoH's digital health access strategy. The system provides automated symptom assessment and triage guidance to members of the public via SMS and WhatsApp, directing users to self-care, primary care, or emergency services.
 
-The governance review has identified that the system is operating in material non-compliance with the EU AI Act. Specifically:
+The pilot has reached an estimated user base of several thousand FCT residents. The system operates without human clinical review of individual recommendations.
 
-- The system has not undergone a conformity assessment as required for high-risk AI systems under Annex III
-- Candidate rejections are currently communicated based on AI outputs without mandatory human review — contrary to Article 14 (human oversight) requirements
-- No independent bias audit has been conducted; the risk of discriminatory shortlisting outcomes cannot currently be quantified or ruled out
-- Vendor documentation of training data and model fairness properties has not been obtained
-
-These are not technical gaps. They represent legal exposure under the EU AI Act and employment non-discrimination law, reputational risk to NorthStar as an employer, and potential harm to job applicants who may have been unfairly excluded.
-
-**The recommended Board decision is: continue operation under strictly enhanced human oversight, with a 90-day remediation programme, or suspend use until remediation is complete.**
+A routine AI system inventory conducted in June 2026 identified this system as the highest-risk AI deployment in the FMoH portfolio. A formal governance review was immediately commissioned.
 
 ---
 
-## Findings in Detail
+## 3. Key Findings
 
-### 1. Classification and Regulatory Exposure
+The governance review identified six material risks. Two are rated Critical — the highest possible rating:
 
-TalentMatch AI is classified as high-risk under EU AI Act Annex III, Category 4(a) — AI systems used in recruitment and selection of natural persons. This is not a borderline case. The system directly influences employment outcomes, and it has been doing so since 2023 without the governance structures the Act requires.
+**Finding 1 — Critical: Risk of Incorrect Emergency Triage**
 
-The EU AI Act entered into application for high-risk systems in August 2026 (note: enforcement timelines are confirmed — the deadline for deployer obligations has not been extended). NorthStar is a deployer under Article 28. Deployers of high-risk AI systems bear specific obligations including ensuring providers supply the required documentation, implementing human oversight, and monitoring system performance.
+The system is making autonomous emergency care decisions for members of the public based on text-based symptom descriptions, with no clinical review before recommendations are delivered. Symptom assessment via text is inherently limited — patients may not accurately describe symptoms, and emergency presentations are frequently atypical.
 
-NorthStar is not currently meeting these obligations.
+An incorrect Self-care recommendation for a patient experiencing a stroke, cardiac event, or obstetric haemorrhage could directly delay life-saving treatment. In Nigeria's healthcare context — where emergency response times are already constrained — this delay could be fatal. No safety-netting advice is confirmed in current system outputs.
 
-### 2. The Autonomous Rejection Problem
+**Finding 2 — Critical: No Accountable Owner**
 
-The most immediate concern is the current workflow: AI-generated shortlists are used to send automated rejection emails without a mandatory human review step. This means the AI system is, in practice, making employment decisions autonomously.
+No individual within FMoH has been formally designated as the accountable owner for this system. The system is currently operating without a responsible principal. If a patient is harmed, there is no defined accountability chain, no investigation process, and no response capability within FMoH.
 
-This is both an EU AI Act compliance failure and a material employment law risk. If a candidate from a protected group was rejected as a result of the AI's output — without human judgement intervening — NorthStar could face an indirect discrimination claim with limited ability to defend it, because no documentation of human reasoning exists.
+**Finding 3 — High: Algorithmic Bias Risk**
 
-This workflow must change before the next hiring cycle. The fix is operational, not technical: HR coordinators must review and approve all shortlisting and rejection decisions.
+The system's performance has not been evaluated on Nigerian patient populations. Evidence from comparable AI health tools deployed in African contexts suggests that systems trained without localised data systematically underperform for rural users, low-literacy users, and users communicating in Pidgin or local languages. If the system is less accurate for these populations, it is failing the patients who need accessible triage guidance most.
 
-### 3. Bias Risk — Unknown, Therefore Unacceptable
+**Finding 4 — High: Vendor Contract Does Not Address AI Safety**
 
-NLP-based recruitment tools have a well-documented tendency to replicate historical hiring patterns. If the data on which TalentMatch was trained reflects the industry's historical underrepresentation of women in finance, or preference for graduates of certain institutions, the model will perpetuate those patterns.
-
-We do not currently know whether TalentMatch AI exhibits this behaviour. HireFlow Technologies Ltd has not supplied training data documentation, and no independent bias evaluation has been conducted. This is not an acceptable position for a system with this level of impact on individuals.
-
-The uncertainty itself is the risk. We cannot confidently defend the system's fairness because we have not tested it.
-
-### 4. Residual Risk After Controls
-
-The formal risk assessment estimates that with the proposed controls in place, residual risk reduces from Critical/High to Medium. The residual Medium rating is primarily driven by:
-
-- The bias audit being pending — we cannot confirm fairness until it is complete
-- Human oversight controls reducing but not eliminating the risk of adverse outcomes
-
-Medium residual risk is an acceptable level for a system of this kind, provided monitoring is in place and controls are properly implemented.
+The current contract with Helium Health contains no AI-specific performance standards, no incident reporting requirements, and no liability provisions for recommendation errors. FMoH has no contractual basis to hold the vendor accountable if the system causes harm.
 
 ---
 
-## Recommended Actions
+## 4. What Is Working
 
-### Immediate (before next hiring cycle)
+The system's intent — expanding access to health guidance for FCT residents who cannot easily access primary care — is sound and aligned with FMoH's digital health strategy. Early user engagement data suggests strong uptake. The underlying technology from Helium Health is operationally functional.
 
-| Action | Owner | Timeline |
-|--------|-------|---------|
-| Implement mandatory HR coordinator review before any rejection is communicated | HR Director | Immediate |
-| Update candidate communications to reflect human-review process | HR Director + Legal | Within 2 weeks |
-| Issue formal information request to HireFlow Technologies Ltd for training data documentation and model card | Procurement + Legal | Within 2 weeks |
-
-### Within 60 Days
-
-| Action | Owner | Timeline |
-|--------|-------|---------|
-| Commission independent bias audit of TalentMatch AI outputs against protected characteristics | AI Governance Programme Office + external auditor | 60 days |
-| Implement enhanced oversight monitoring (shortlisting rate tracking by demographic) | HR Director | 60 days |
-| Review and update candidate-facing privacy notice | Legal / DPO | 60 days |
-
-### Within 90 Days
-
-| Action | Owner | Timeline |
-|--------|-------|---------|
-| Complete full EU AI Act conformity assessment | AI Governance Programme Office | 90 days |
-| Decide on system's future based on bias audit results and conformity assessment | Board Risk & Audit Committee | 90 days |
-| Include AI Act compliance obligations in all relevant vendor contracts | Procurement + Legal | 90 days |
+The governance failures identified in this review are not arguments against AI-assisted triage as a tool. They are arguments for ensuring it is deployed responsibly before being scaled.
 
 ---
 
-## Decision Requested
+## 5. Recommendation
 
-The Board is asked to approve one of the following:
+The eHealth Division recommends **conditional suspension** of the system's autonomous operation, with resumption permitted upon satisfaction of five minimum conditions:
 
-**Option A — Continue with enhanced oversight (Recommended)**
-Permit TalentMatch AI to continue operation, subject to mandatory human review controls being implemented before the next hiring cycle and the full remediation programme completing within 90 days. This option preserves operational continuity while managing risk within an acceptable envelope.
+| Condition | Responsible Party | Timeline |
+|---|---|---|
+| Appoint a named System Owner within eHealth Division | Director, eHealth Division | 7 days |
+| Implement safety-netting messages and red-flag escalation for emergency symptoms | Helium Health / eHealth Division | 30 days |
+| Introduce human clinical review for all Emergency classifications | eHealth Division / NPHCDA | 30 days |
+| Update vendor contract with AI-specific performance and accountability clauses | FMoH Legal / Procurement | 45 days |
+| Confirm and document AI disclosure to all users | Helium Health | 14 days |
 
-**Option B — Suspend pending remediation**
-Suspend use of TalentMatch AI until the conformity assessment and bias audit are complete. Manual CV screening to be used in the interim. This option eliminates current regulatory exposure but increases recruitment workload and timelines.
-
-**The AI Governance Programme Office recommends Option A**, on the basis that the immediate human oversight control is implementable quickly and materially reduces the harm risk, while suspension would create significant operational disruption for an issue that is remediable.
-
----
-
-## Escalation if Controls Not Implemented
-
-If the Board approves Option A and the immediate controls are not implemented within two weeks, the AI Governance Programme Office will escalate to the Chief Compliance Officer with a recommendation to suspend the system. The current configuration — AI-driven autonomous rejections without human oversight — is not a risk NorthStar should carry for longer than necessary.
+Upon satisfaction of these conditions, the system may resume operation under a formal governance framework with quarterly Ministerial reporting.
 
 ---
 
-*Attachments: AI Risk Assessment — TalentMatch AI (March 2026)*
+## 6. Ministerial Decision Requested
 
-*Prepared by: AI Governance Programme Office*
-*Contact: [ai-governance@northstar-financial.example]*
+The Honourable Minister is respectfully requested to:
+
+1. **Approve** the conditional suspension of the HealthLine Nigeria AI Triage Chatbot pending implementation of the minimum governance conditions outlined above
+
+2. **Direct** the Director of eHealth Division to submit a governance remediation report within 45 days confirming the status of each condition
+
+3. **Note** that this review has also identified four other High Risk AI systems in the FMoH portfolio requiring governance attention, details of which will be presented in a separate briefing
+
+---
+
+## 7. Wider Implications
+
+This review has broader significance beyond the HealthLine system. It is the first formal AI governance review conducted within FMoH. It has revealed that the Ministry currently has no systematic framework for governing AI systems across its departments, affiliated hospitals, and donor-funded programmes.
+
+The eHealth Division recommends that the Minister approve the development of an **FMoH AI Governance Policy** — a lightweight framework establishing minimum standards for AI system accountability, risk assessment, human oversight, and incident reporting across all FMoH AI deployments. This would position Nigeria's Federal Ministry of Health as a regional leader in responsible health AI governance, aligned with WHO guidance and increasingly referenced by international health donors.
+
+A policy proposal can be prepared for Ministerial consideration within 60 days.
+
+---
+
+*Prepared by the eHealth Division, Federal Ministry of Health, Nigeria.*  
+*Governance review conducted in accordance with NIST AI Risk Management Framework (AI RMF 1.0) and WHO Guidance on Ethics and Governance of AI for Health (2021).*
+
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
