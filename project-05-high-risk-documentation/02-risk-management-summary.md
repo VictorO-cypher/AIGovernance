@@ -1,182 +1,134 @@
-# Document 2: Risk Management Summary
+# 02 — Risk Management Summary
+## NCDC Integrated Disease Surveillance Platform — AI Module
 
-**System:** HireAssist Pro (NS-AI-008)
-**EU AI Act Reference:** Article 9 (Risk Management System)
-**Document Type:** Deployer (NorthStar) — with provider inputs
-**Version:** 1.0 — March 2026
-
----
-
-## 1. Risk Management System Overview
-
-Article 9 of the EU AI Act requires that high-risk AI systems be subject to a risk management system that is a continuous, iterative process across the system's entire lifecycle. This document summarises the risk management approach for HireAssist Pro at NorthStar Financial Services.
-
-The risk management system covers:
-
-- Identification and analysis of known and foreseeable risks
-- Estimation and evaluation of risks in the deployment context
-- Implementation of risk mitigation measures
-- Residual risk assessment
-- Testing against intended purpose and foreseeable misuse scenarios
-- Review and update obligations
+**Document Type:** Deployer Documentation  
+**System:** FMoH-AI-001  
+**Version:** 1.0  
+**Date:** October 2026  
+**Framework:** EU AI Act Article 9 | NIST AI RMF Map and Measure Functions  
 
 ---
 
-## 2. Risk Identification
+## 1. Risk Management Approach
 
-The following risk categories have been identified for HireAssist Pro in NorthStar's deployment context:
+FMoH and NCDC apply a structured risk management approach to the Disease Surveillance Platform AI Module throughout its operational lifecycle. This approach is aligned with EU AI Act Article 9 obligations and the NIST AI RMF Map and Measure functions.
 
-### R1 — Discriminatory Shortlisting Outcomes
-
-**Description:** The model may produce shortlists that systematically disadvantage candidates from protected groups (gender, age, ethnicity, disability) due to proxy discrimination, training data bias, or feature encoding.
-
-**Likelihood:** Medium (bias risk is inherent in NLP-based CV processing; vendor has conducted bias testing — see Section 3)
-**Impact:** High (employment access denied; legal and regulatory consequence)
-**Risk level:** High
-
-**Mitigation measures:**
-- Vendor-supplied bias audit against EU protected characteristics (pre-deployment)
-- NorthStar independent validation on a representative candidate dataset
-- Ongoing monitoring of shortlisting rates by demographic proxy indicators
-- Human oversight of all shortlisting decisions (see Document 4)
-
-**Residual risk:** Medium (mitigations reduce but do not eliminate bias risk; ongoing monitoring is essential)
+Risk management for this system is **continuous** — not a point-in-time compliance exercise. Risks are identified, assessed, mitigated, and monitored on an ongoing basis, with formal review at each quarterly AI Review Committee meeting.
 
 ---
 
-### R2 — Over-reliance by HR Users
+## 2. Risk Identification Scope
 
-**Description:** HR coordinators may defer to AI recommendations without exercising genuine independent judgement, effectively making the system's output the decision rather than a recommendation.
+Risks are assessed across four categories:
 
-**Likelihood:** Medium (documented phenomenon in human-AI teaming)
-**Impact:** Medium (undermines human oversight; increases downstream risk of R1 harm)
-**Risk level:** Medium
-
-**Mitigation measures:**
-- Mandatory oversight training before system access is granted
-- UI design: shortlist presented with explanation text requiring active review, not just approval
-- Override rate monitoring — unusually low override rates trigger coaching
-- Annual oversight effectiveness assessment
-
-**Residual risk:** Low
+| Category | Description |
+|---|---|
+| **Technical** | Risks arising from model performance, data quality, or system failures |
+| **Public Health** | Risks of harm to Nigeria's disease surveillance and outbreak response capacity |
+| **Governance** | Risks arising from accountability gaps, process failures, or misuse |
+| **Data and Privacy** | Risks arising from data processing, sharing, or retention practices |
 
 ---
 
-### R3 — Scope Creep Beyond Intended Purpose
+## 3. Risk Register Summary
 
-**Description:** System used beyond the approved CV screening and shortlisting function (e.g., interview scoring, internal mobility decisions).
+### Risk 01 — False Negative Outbreak Prediction (Missed Outbreak)
 
-**Likelihood:** Low (strong access controls; clear policy prohibition)
-**Impact:** Medium (different use cases may carry different risk profiles requiring separate assessment)
-**Risk level:** Low
+**Description:** The model fails to classify an LGA as High or Critical risk during the early stages of a genuine outbreak, delaying NCDC's detection and response.
 
-**Mitigation measures:**
-- Technical access controls limiting available functions to approved use case
-- Policy prohibition documented and communicated
-- Annual scope attestation by system owner
-
-**Residual risk:** Low
-
----
-
-### R4 — Data Minimisation Failure
-
-**Description:** System processes more candidate personal data than is necessary for the stated purpose.
-
-**Likelihood:** Low (system designed to process CV content only)
-**Impact:** Medium (GDPR compliance; candidate trust)
-**Risk level:** Low
-
-**Mitigation measures:**
-- Data flows documented and validated against GDPR minimisation principle
-- Vendor data processing agreement in place
-- DPO review completed
-
-**Residual risk:** Low
+| Assessment | Detail |
+|---|---|
+| Likelihood | 3 — Possible. The model has demonstrated strong performance on historical outbreaks but data quality gaps in rural LGAs reduce reliability in those areas. |
+| Impact | 5 — Catastrophic. A missed early warning for a cholera or meningitis outbreak could result in hundreds of preventable deaths before the outbreak is detected through conventional surveillance. |
+| **Inherent Risk** | **15 — High** |
+| Mitigations | Mandatory epidemiologist review supplements model outputs; IDSR conventional surveillance continues in parallel; LGAs with low reporting compliance are flagged |
+| **Residual Risk** | **9 — Low** |
 
 ---
 
-### R5 — Vendor Model Changes Without Notification
+### Risk 02 — False Positive Outbreak Prediction (Unnecessary Alert)
 
-**Description:** HireFlow Technologies Ltd updates the model without adequate notification to NorthStar, introducing changes that affect performance, fairness, or compliance.
+**Description:** The model classifies an LGA as High or Critical risk when no genuine outbreak threat exists, triggering unnecessary resource deployment and potentially causing public alarm.
 
-**Likelihood:** Medium (SaaS vendors update models regularly)
-**Impact:** High (material model change could re-introduce risks)
-**Risk level:** High
-
-**Mitigation measures:**
-- Contract requires minimum 60 days' notice of material model changes
-- Material change defined in contract: any update affecting model architecture, training data, or feature set
-- NorthStar right to conduct validation testing before accepting update
-- Right to delay model update to production pending NorthStar validation
-
-**Residual risk:** Low
+| Assessment | Detail |
+|---|---|
+| Likelihood | 3 — Possible. Environmental data lag and seasonal anomalies can produce false elevation of risk scores. |
+| Impact | 3 — Moderate. Unnecessary resource deployment is costly; false alarms repeated over time erode trust in the surveillance system. |
+| **Inherent Risk** | **9 — Low** |
+| Mitigations | Epidemiologist authorisation required before any alert is issued; two-week confirmation window for Medium risk classifications before escalation |
+| **Residual Risk** | **4 — Negligible** |
 
 ---
 
-### R6 — Candidate Rights and Transparency Failure
+### Risk 03 — Rural LGA Data Quality Bias
 
-**Description:** Candidates are not informed that AI is used in the recruitment process, or cannot exercise rights to explanation or challenge under GDPR Article 22.
+**Description:** LGAs with chronically low IDSR reporting compliance produce systematically unreliable risk scores. These are often the most underserved LGAs — where outbreak risk is highest and surveillance capacity is weakest. The model may underestimate risk in exactly the areas that most need early warning.
 
-**Likelihood:** Low (controls designed in from outset)
-**Impact:** Medium–High (legal non-compliance; regulatory consequence; candidate harm)
-**Risk level:** Medium
-
-**Mitigation measures:**
-- Candidate-facing disclosure in job application process: AI is used for initial CV screening
-- Explanation capability: system provides human-readable score rationale
-- Challenge mechanism: candidates who receive rejection decisions can request human review
-- Legal review of candidate communications completed
-
-**Residual risk:** Low
+| Assessment | Detail |
+|---|---|
+| Likelihood | 4 — Likely. Data quality gaps in rural LGAs are a documented, persistent structural issue in Nigeria's health information system. |
+| Impact | 4 — Major. Systematic underestimation of risk in high-vulnerability, low-resource LGAs is a health equity failure with potentially severe consequences. |
+| **Inherent Risk** | **16 — High** |
+| Mitigations | Dashboard flags all LGAs with <70% reporting compliance; epidemiologists instructed to treat low-compliance LGA scores with additional caution; NCDC field teams conduct manual surveillance in chronically low-compliance LGAs |
+| **Residual Risk** | **8 — Low** |
 
 ---
 
-## 3. Pre-Deployment Risk Evaluation
+### Risk 04 — Model Drift
 
-Before deployment, the following evaluations must be completed and documented:
+**Description:** The model's predictive accuracy degrades over time as disease patterns, environmental conditions, or population dynamics shift in ways not captured by the training data.
 
-| Evaluation | Owner | Standard | Status |
-|-----------|-------|---------|--------|
-| Vendor bias audit (EU protected characteristics) | HireFlow Technologies Ltd | Demographic parity across gender, age, ethnicity proxies | Completed — results reviewed ✓ |
-| NorthStar independent fairness validation | AGPO + external evaluator | Demographic parity ≤ 0.8 disparate impact ratio | In progress |
-| Data protection impact assessment | DPO | GDPR Article 35 | Completed ✓ |
-| Technical documentation review | AGPO + Legal | Annex IV completeness | In progress |
-| Penetration and adversarial testing | Information Security | Adversarial input testing protocol | Scheduled — April 2026 |
-| User acceptance testing with oversight training | HR Director + AGPO | 100% of system users trained and UAT complete | Scheduled — May 2026 |
-
-**Go-live gate:** All evaluations must be completed and sign-off from AGPO, DPO, Legal, and HR Director received before production deployment.
+| Assessment | Detail |
+|---|---|
+| Likelihood | 3 — Possible. Annual retraining mitigates but does not eliminate drift risk, particularly for novel or re-emerging pathogens. |
+| Impact | 4 — Major. Undetected model drift could produce systematically unreliable predictions without epidemiologists being aware. |
+| **Inherent Risk** | **12 — Medium** |
+| Mitigations | Annual model retraining; quarterly performance review against historical outbreak records; epidemiologists trained to report anomalous prediction patterns |
+| **Residual Risk** | **6 — Low** |
 
 ---
 
-## 4. Foreseeable Misuse Scenarios
+### Risk 05 — Unauthorised or Misuse of Outputs
 
-The following reasonably foreseeable misuse scenarios have been considered and mitigated:
+**Description:** System outputs are shared beyond authorised users, or used for purposes outside the system's intended purpose — for example, public communication of raw risk scores without epidemiologist interpretation.
 
-| Scenario | Risk | Mitigation |
-|----------|------|-----------|
-| HR coordinator accepts all AI recommendations without review | Autonomous AI decision-making | Training, UI friction, override rate monitoring |
-| System used to screen internal transfer candidates | Out-of-scope use | Access controls, policy, scope attestation |
-| Manager requests score for a specific candidate before CV submission | Gaming / bias | System does not accept individual queries outside standard batch process |
-| Candidate submits CV crafted to game the AI (adversarial CV) | Model gaming | Low risk given human review; adversarial input testing planned |
-
----
-
-## 5. Residual Risk Acceptance
-
-Following implementation of all mitigation measures, the overall residual risk position is assessed as **Medium**.
-
-The residual Medium rating reflects that:
-- AI-based CV processing carries inherent bias risk that monitoring can detect but not entirely eliminate
-- Human oversight remains a dependency — if oversight quality degrades, residual risk increases
-
-The AI Governance Committee has reviewed and accepted this residual risk position as consistent with:
-- NorthStar's risk appetite for operational AI risk
-- The requirements of Article 9(4) (ensuring risks are reduced to an acceptable level)
-- The understanding that ongoing monitoring will detect emerging issues
-
-**Acceptance recorded:** AI Governance Committee, [pending approval date]
+| Assessment | Detail |
+|---|---|
+| Likelihood | 2 — Unlikely. Access controls limit dashboard access to authorised users. |
+| Impact | 4 — Major. Uninterpreted public release of outbreak risk scores could cause public panic or undermine trust in NCDC. |
+| **Inherent Risk** | **8 — Low** |
+| Mitigations | Role-based access controls; all public communications must be authorised by NCDC communications staff; policy prohibition on unauthorised sharing |
+| **Residual Risk** | **4 — Negligible** |
 
 ---
 
-*Risk management is a continuous process. This document will be updated following any material incident, material system change, or at the annual review.*
+## 4. Residual Risk Summary
+
+| Risk | Inherent Rating | Residual Rating | Residual Level |
+|---|---|---|---|
+| R01 — False Negative (Missed Outbreak) | 15 — High | 9 | Low |
+| R02 — False Positive (Unnecessary Alert) | 9 — Low | 4 | Negligible |
+| R03 — Rural LGA Data Quality Bias | 16 — High | 8 | Low |
+| R04 — Model Drift | 12 — Medium | 6 | Low |
+| R05 — Unauthorised Output Use | 8 — Low | 4 | Negligible |
+
+**Overall Residual Risk Position: LOW**  
+Subject to continued implementation of mitigations and quarterly monitoring.
+
+---
+
+## 5. Open Risk Items
+
+The following risk items remain open and are under active management:
+
+| Item | Description | Owner | Target |
+|---|---|---|---|
+| Explainability enhancement | Model does not produce feature-level explanations — epidemiologists cannot interrogate prediction logic | Africa CDC / NCDC | v3.0 release (2027) |
+| Cross-border data integration | Model does not incorporate disease data from neighbouring countries for border LGAs | NCDC / WHO AFRO | 2027 roadmap |
+| Rural IDSR reporting improvement | Root cause of data quality bias — requires structural improvement in LGA reporting capacity | NHMIS / State PHCDAs | Ongoing |
+
+---
+
+*Document Version 1.0 — October 2026*  
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
+
