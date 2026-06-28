@@ -1,160 +1,148 @@
-# Document 6: Performance Monitoring Plan
+# 06 — Performance Monitoring
+## NCDC Integrated Disease Surveillance Platform — AI Module
 
-**System:** HireAssist Pro (NS-AI-008)
-**EU AI Act Reference:** Article 15 (Accuracy, Robustness, Cybersecurity) · Article 17 (Post-Market Monitoring)
-**Document Type:** Deployer (NorthStar)
-**Version:** 1.0 — March 2026
-
----
-
-## 1. Purpose
-
-Article 17 of the EU AI Act requires deployers of high-risk AI systems to implement a post-market monitoring plan that systematically collects and analyses performance data during the system's operational lifetime. Article 15 requires that high-risk AI systems achieve an appropriate level of accuracy and be robust to errors, faults, and inconsistencies.
-
-This document defines NorthStar's monitoring plan for HireAssist Pro.
+**Document Type:** Deployer Documentation  
+**System:** FMoH-AI-001  
+**Version:** 1.0  
+**Date:** October 2026  
+**Framework:** EU AI Act Articles 15 & 17 | NIST AI RMF Measure 2.5 & Manage 4.2  
 
 ---
 
-## 2. Monitoring Objectives
+## 1. Performance Monitoring Purpose
 
-Post-deployment monitoring serves four objectives:
+Post-deployment performance monitoring ensures that the AI module continues to perform as intended throughout its operational lifetime. It detects model drift, identifies bias against specific populations or geographies, and provides the evidence base for decisions about model retraining, scope changes, or suspension.
 
-1. **Performance validation** — confirm the system continues to perform at or above accepted standards
-2. **Fairness assurance** — detect emerging bias or disparate impact across candidate groups
-3. **Oversight quality** — verify that human oversight is functioning as designed
-4. **Drift detection** — identify when the candidate population or role requirements have shifted sufficiently that the model may need revalidation
+Monitoring is the operational complement to the pre-deployment bias evaluation — it answers the question not just "does the model work?" but "does it continue to work, for whom, and under what conditions?"
 
 ---
 
-## 3. Performance Metrics
+## 2. Performance Metrics
 
-### 3.1 Model Performance Metrics
+### 2.1 Primary Accuracy Metrics
 
-These metrics measure whether the model is doing its job well:
+Performance is assessed by comparing AI risk classifications to outbreak outcomes confirmed through conventional surveillance and laboratory confirmation.
 
-| Metric | Definition | Target | Review Frequency | Alert Threshold |
-|--------|-----------|--------|-----------------|----------------|
-| **Shortlist acceptance rate** | % of AI-generated shortlists accepted by HR coordinators without modification | Baseline to be established in first 3 months of production | Monthly | >20% change from 3-month baseline |
-| **Interview conversion rate** | % of AI-shortlisted candidates (including those not overridden) who progress to interview | Baseline to be established | Quarterly | >15% below baseline |
-| **Explanation usefulness score** | HR coordinator self-reported rating of explanation text quality (1–5 scale) | ≥3.5 average | Quarterly | <3.0 for two consecutive quarters |
-| **Special category data flag rate** | % of CVs triggering the special category data filter | Informational | Monthly | >10% (may indicate candidate population change) |
+| Metric | Definition | Target | Review Frequency |
+|---|---|---|---|
+| Sensitivity (Recall) | % of confirmed outbreaks that were preceded by a High/Critical AI classification in the 2–4 weeks before confirmation | ≥75% | Quarterly |
+| Specificity | % of non-outbreak LGA-weeks correctly classified as Low/Medium | ≥80% | Quarterly |
+| False Negative Rate | % of confirmed outbreaks NOT preceded by a High/Critical classification | ≤25% | Quarterly |
+| Lead Time | Average number of weeks between first High/Critical classification and outbreak confirmation | ≥2 weeks | Quarterly |
+| AUC-ROC | Overall discriminatory performance of the model across all LGAs | ≥0.80 | Annually (at retraining) |
 
-### 3.2 Fairness Metrics
+### 2.2 Equity Metrics
 
-These metrics detect potential discriminatory patterns in model outputs:
+Performance is assessed separately for population subgroups to detect differential performance:
 
-| Metric | Definition | Target | Review Frequency | Alert Threshold |
-|--------|-----------|--------|-----------------|----------------|
-| **Demographic parity ratio** | Ratio of shortlisting rate for protected group / shortlisting rate for reference group | ≥0.80 (for each measurable proxy group) | Quarterly | <0.80 or declining trend over two quarters |
-| **Score distribution by proxy group** | Mean and standard deviation of AI scores by gender proxy, age band, name-inferred ethnicity proxy | No statistically significant difference between groups | Quarterly | p<0.05 significance in mean difference |
-| **Override rate by candidate group** | Whether HR coordinators override AI recommendations at different rates for different candidate groups | No systematic pattern | Quarterly | Statistically significant difference |
-| **Rejection rate by application source** | Whether candidates from specific recruitment channels are rejected at higher rates | No unexplained variation | Quarterly | >15% variation unexplained by role-specific factors |
+| Metric | Disaggregation | Target | Review Frequency |
+|---|---|---|---|
+| Sensitivity by geopolitical zone | Northwest, Northeast, North-Central, Southwest, Southeast, South-South | No zone >10pp below national average | Quarterly |
+| Sensitivity by urbanicity | Urban LGAs vs rural LGAs | Rural sensitivity ≥ urban sensitivity − 10pp | Quarterly |
+| Sensitivity by reporting compliance tier | High compliance LGAs (>80%) vs low compliance (<70%) | Documented and monitored | Quarterly |
+| False negative rate by disease category | Per disease in scope | No category >15pp above national average | Quarterly |
 
-**Note on demographic data:** NorthStar does not collect protected characteristic data from applicants. Proxy indicators are used (name-based gender and ethnicity inference, application metadata). These proxies are imperfect and monitoring results must be interpreted with that limitation acknowledged. Where proxy-based analysis identifies a potential issue, manual review of a sample is conducted.
+### 2.3 Operational Metrics
 
-### 3.3 Oversight Quality Metrics
-
-These metrics verify that human oversight is functioning as designed:
-
-| Metric | Definition | Target | Review Frequency | Alert Threshold |
-|--------|-----------|--------|-----------------|----------------|
-| **Override rate** | % of AI shortlists modified by HR coordinator | Target: 10–40% (meaningful oversight range) | Monthly | <5% (possible nominal oversight) or >80% (possible model failure) |
-| **Review time (median)** | Median time spent by coordinator reviewing each candidate on shortlist | ≥45 seconds per candidate | Monthly | <30 seconds (insufficient review time) |
-| **Challenge rate** | % of rejection decisions challenged by candidates | Informational | Quarterly | >2% (indicates potential systemic issue) |
-| **Training currency** | % of active system users with current training certification | 100% | Monthly | <100% triggers access suspension for non-compliant users |
+| Metric | Definition | Target | Review Frequency |
+|---|---|---|---|
+| Model run completion | % of weekly model runs completed on schedule | ≥99% | Monthly |
+| Data ingestion completeness | % of expected data feeds successfully ingested each week | ≥95% | Weekly (automated) |
+| Review timeliness | % of weekly reviews completed within 48 hours of model run | ≥95% | Quarterly |
+| Override rate | % of High/Critical classifications overridden by epidemiologists | Monitored — no fixed target; high override rate triggers review | Quarterly |
 
 ---
 
-## 4. Monitoring Cadence and Responsibilities
+## 3. Performance Review Process
 
-| Activity | Frequency | Owner | Output |
-|----------|-----------|-------|--------|
-| Automated metric dashboard refresh | Daily | IT / AGPO (automated) | Dashboard — accessible to HR Director and AGPO |
-| Override rate review | Monthly | HR Director | Escalation to AGPO if threshold triggered |
-| Full performance report | Quarterly | AGPO | Report to AI Governance Committee |
-| Fairness analysis | Quarterly | AGPO + ML Engineering | Included in quarterly report |
-| Annual system review | Annual | AGPO | Full system review — feeds renewal decision |
-| Vendor model performance report | Quarterly (from HireFlow) | Head of Credit Risk (as contract contact) | Reviewed by AGPO; escalate material changes |
+### 3.1 Weekly Automated Monitoring
 
----
+The system generates an automated weekly performance digest that reports:
 
-## 5. Drift Detection and Model Revalidation Triggers
+- Data ingestion completeness for the week
+- Number of LGAs flagged High/Critical
+- Number of LGAs with low-confidence flags
+- Any system errors or failed model runs
 
-The model must be revalidated if any of the following triggers occur:
+The digest is sent automatically to the AI Governance Lead and the NCDC Epidemiology team lead every Monday.
 
-| Trigger | Rationale |
-|---------|-----------|
-| Demographic parity ratio drops below 0.80 for any measurable group | Potential emerging discriminatory pattern |
-| Interview conversion rate declines >15% from baseline for two consecutive quarters | Model may no longer be matching candidates effectively to roles |
-| NorthStar's candidate population changes significantly (e.g., entry into new geographies, new role types) | Model trained on existing patterns may not generalise |
-| HireFlow releases a new model version | Material change requires NorthStar validation before acceptance |
-| AI incident involving HireAssist Pro | Post-incident revalidation standard |
-| 24 months since last full revalidation (if no other trigger) | Scheduled revalidation cycle |
+### 3.2 Quarterly Performance Review
 
-When a revalidation trigger is reached, AGPO initiates a revalidation review. The system continues to operate during revalidation unless AGPO determines there is a material risk requiring suspension.
+The AI Review Committee conducts a formal quarterly performance review. The AI Governance Lead prepares a **Quarterly Performance Report** covering:
 
----
+- Primary accuracy metrics vs targets for the quarter
+- Equity metrics — performance by zone, urbanicity, and compliance tier
+- Override rate analysis — patterns in epidemiologist override decisions
+- Alert outcome reconciliation — outbreaks confirmed vs AI predictions
+- Operational metrics
+- Open risk items status update
+- Any incidents or near-misses in the quarter
 
-## 6. Vendor Monitoring Obligations
+The Quarterly Performance Report is presented to the AI Review Committee and filed in the FMoH AI Systems Register.
 
-NorthStar relies on HireFlow Technologies Ltd to:
+### 3.3 Annual Model Review and Retraining
 
-- Notify NorthStar of any material model changes ≥60 days in advance
-- Provide quarterly performance reports covering accuracy, fairness, and known issues
-- Report any serious incidents involving HireAssist Pro across its customer base within 24 hours of discovery
-- Maintain the technical documentation and make it available to NorthStar on request
-- Cooperate with regulatory inspections that relate to HireAssist Pro
+An annual model review is conducted each January, coinciding with the post-rainy-season surveillance analysis. The review includes:
 
-These obligations are contractually captured. Failure to meet notification or reporting obligations is a material contract breach.
+- Full AUC-ROC assessment on the prior year's data
+- Comparison of model predictions to confirmed outbreak outcomes for the full year
+- Bias evaluation across demographic and geographic subgroups
+- Assessment of any significant epidemiological changes (new pathogens, demographic shifts, health system changes) that may require model updates
+- Decision on whether model retraining is required
 
----
-
-## 7. Serious Incident Reporting
-
-If post-deployment monitoring detects a potential serious incident (e.g., discriminatory outcomes affecting a protected group), the following escalation applies:
-
-```
-[Detection] Metric alert triggered or complaint received
-     |
-     v
-[AGPO triage] Is this a potential serious incident? (24h)
-     |
-     +---> No: Document finding; increase monitoring frequency
-     |
-     +---> Yes: Initiate AI Incident Response (AI-INC classification)
-              |
-              v
-           [AI Governance Committee] Notified within 24h
-              |
-              v
-           [Assess regulatory reporting obligation] (Article 73, EU AI Act)
-              |
-              v
-           [Containment, investigation, remediation] per incident response procedure
-```
+Model retraining is mandatory if:
+- AUC-ROC falls below 0.78
+- Any geopolitical zone sensitivity falls more than 15 percentage points below the national average
+- A new disease category is added to the system's scope
 
 ---
 
-## 8. Annual System Review
+## 4. Performance Thresholds and Escalation
 
-At the 12-month mark from go-live (target: June 2027 for first review), AGPO will conduct a full annual system review covering:
+The following thresholds trigger automatic escalation to the AI Review Committee:
 
-1. Performance summary against all metrics in this plan
-2. Fairness analysis summary
-3. Incident log review
-4. Oversight quality assessment
-5. Vendor performance assessment
-6. Regulatory change assessment (any new obligations that affect the system)
-7. Recommendation: continue as-is / modify / decommission
-
-The annual review is presented to the AI Governance Committee. Continuation of the system in production is conditional on a satisfactory review.
+| Trigger | Threshold | Action |
+|---|---|---|
+| Sensitivity below target | Quarterly sensitivity <70% nationally | Immediate AI Review Committee notification; technical review within 14 days |
+| Zonal equity breach | Any zone sensitivity >15pp below national | Technical review and retraining assessment within 30 days |
+| High override rate | >30% of High/Critical classifications overridden in a quarter | Technical review — potential model performance issue |
+| False negative incident | Confirmed outbreak not preceded by any High/Medium classification | Incident report filed; root cause analysis within 30 days |
+| Model run failure | >2 consecutive weekly model runs fail | Immediate technical escalation to Africa CDC; manual surveillance protocols activated |
 
 ---
 
-## 9. Documentation and Retention
+## 5. Retraining Protocol
 
-All monitoring outputs — dashboards, quarterly reports, annual reviews, incident records, revalidation findings — are retained for 36 months and stored in the AI Governance Programme Office documentation archive. They are available for regulatory inspection.
+When retraining is triggered, the following protocol applies:
+
+| Step | Action | Owner | Timeline |
+|---|---|---|---|
+| 1 | Retraining need confirmed by AI Review Committee | AI Review Committee | Within 14 days of trigger |
+| 2 | Training data preparation — updated IDSR records and outbreak outcomes | Africa CDC Analytics | 4 weeks |
+| 3 | Model retrained and internally validated | Africa CDC Analytics | 6 weeks |
+| 4 | Independent bias evaluation of retrained model | Independent Evaluator | 3 weeks |
+| 5 | Results presented to AI Review Committee | AI Governance Lead | 1 week |
+| 6 | Deployment approved by Permanent Secretary | Permanent Secretary | 1 week |
+| 7 | New model version deployed | Africa CDC / NCDC technical team | 1 week |
+
+**Total retraining cycle: approximately 16 weeks**
+
+During the retraining cycle, the existing model remains operational with enhanced human oversight — epidemiologists are briefed that the model is under review and instructed to apply additional caution to High/Critical classifications.
 
 ---
 
-*This monitoring plan is a living document. Metric thresholds and review frequencies may be adjusted based on experience in the first year of operation, subject to AGPO approval.*
+## 6. Continuous Improvement
+
+Performance monitoring findings are fed back into the system's development roadmap. The following improvements are currently on the roadmap based on monitoring insights:
+
+| Improvement | Basis | Target Version |
+|---|---|---|
+| Explainability module — feature-level explanations for LGA predictions | Epidemiologist feedback: difficulty interpreting predictions without explanation | v3.0 (2027) |
+| Cross-border data integration — WHO AFRO regional surveillance feeds | Border LGA false negative analysis | v3.0 (2027) |
+| Real-time environmental data feed — reduce climate data lag from 2 weeks to 3 days | Quarterly review: lag reduces real-time accuracy | v3.0 (2027) |
+| Rural LGA confidence model — explicit uncertainty quantification for low-compliance LGAs | Equity metric analysis: rural performance gap | v3.0 (2027) |
+
+---
+
+*Document Version 1.0 — October 2026*  
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
