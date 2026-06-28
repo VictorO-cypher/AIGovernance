@@ -1,96 +1,146 @@
-# Document 1: System Description and Intended Purpose
+# 01 — Intended Purpose & System Description
+## NCDC Integrated Disease Surveillance Platform — AI Module
 
-**System:** HireAssist Pro
-**Provider:** HireFlow Technologies Ltd (v3.1)
-**Deployer:** NorthStar Financial Services
-**Document Type:** Provider documentation (supplied) + Deployer context (NorthStar-authored)
-**EU AI Act Reference:** Article 11, Annex IV §1 and §2
-**Version:** 1.0 — March 2026
-
----
-
-## 1. System Identification
-
-| Field | Value |
-|-------|-------|
-| System name | HireAssist Pro |
-| Version | 3.1.2 |
-| Provider | HireFlow Technologies Ltd, Amsterdam, Netherlands |
-| Deployer | NorthStar Financial Services |
-| Deployment context | Internal HR — all recruitment activity across NorthStar DE and NL |
-| EU AI Act classification | High Risk — Annex III Category 4(a) |
-| Unique system identifier | NS-AI-008 |
-| Date of first deployment (NorthStar) | Target: 1 June 2026 (pending conformity confirmation) |
+**Document Type:** Deployer Documentation  
+**System:** FMoH-AI-001  
+**Version:** 1.0  
+**Date:** October 2026  
+**Owner:** Director General, Nigeria Centre for Disease Control (NCDC)  
 
 ---
 
-## 2. General Description of the AI System
+## 1. System Identity
 
-HireAssist Pro is an AI-assisted recruitment support system that analyses candidate CVs and job descriptions to generate structured shortlists and candidate assessments. It is designed to support, not replace, human recruitment decisions.
-
-The system uses a transformer-based natural language processing model to extract and compare candidate qualifications, experience, and skills against role requirements. It produces:
-
-- A structured shortlist ranked by relevance score
-- Per-candidate fit assessment across defined criteria
-- Plain-language explanation of the basis for each candidate's score (explanation module)
-
-The system is not an autonomous decision-making system. It generates recommendations. All decisions — shortlisting, rejection, invitation to interview — are made by human HR staff using the system's output as one input among several.
-
----
-
-## 3. Intended Purpose
-
-**Primary intended purpose:** To assist NorthStar HR coordinators and hiring managers in the initial screening of job applications, reducing the time required to review high volumes of CVs while maintaining structured, criteria-based assessment.
-
-**Intended users:** Trained HR coordinators and hiring managers at NorthStar Financial Services.
-
-**Intended context of use:** The system is deployed within NorthStar's applicant tracking system (Workday integration). It is used for all open roles across NorthStar's operations in Germany and the Netherlands. It is not intended for, and must not be used for, any purpose other than initial CV screening and shortlisting recommendations.
-
-**Outputs and their intended use:**
-- Shortlist and scores are **recommendations** to the HR coordinator
-- HR coordinators are required to review the shortlist and exercise independent judgment before any candidate communication
-- The system's explanation output is intended to assist reviewers in understanding the basis for the recommendation and in exercising meaningful oversight
-
-**Intended operational lifespan:** 3 years, subject to annual review and performance assessment.
+| Field | Detail |
+|---|---|
+| **System Name** | NCDC Integrated Disease Surveillance Platform — AI Outbreak Prediction Module |
+| **System ID** | FMoH-AI-001 |
+| **Deployer** | Nigeria Centre for Disease Control (NCDC), under the Federal Ministry of Health |
+| **Technical Developer** | Africa CDC / WHO AFRO (technical support and model development) |
+| **Deployment Date** | January 2022 |
+| **Current Version** | v2.3 (deployed March 2025) |
+| **Deployment Geography** | Nigeria — all 36 states and Federal Capital Territory |
+| **Risk Classification** | High Risk (EU AI Act Annex III, Category 1 — critical infrastructure) |
+| **NIST AI RMF Maturity** | 2 (Developing) — under active improvement |
 
 ---
 
-## 4. Prohibited Uses
+## 2. Intended Purpose
 
-The following uses of HireAssist Pro are explicitly prohibited at NorthStar:
+### 2.1 Primary Purpose
 
-- Using the system's output as the sole basis for any candidate rejection without human review
-- Using the system for internal promotion or performance assessment decisions
-- Using the system beyond the screening and initial shortlisting phase (e.g., for interview scoring, reference assessment)
-- Processing candidate data beyond what is contained in submitted CVs and job descriptions without explicit candidate consent
-- Allowing any individual who has not completed HireAssist Pro oversight training to act as a reviewer
+The NCDC Disease Surveillance Platform AI Module is designed to **predict the probability of disease outbreaks at Local Government Area (LGA) level** across Nigeria, using historical disease case data, hospital admission records, environmental variables, and population data. Its outputs support NCDC epidemiologists in making early warning and resource deployment decisions.
 
-Prohibited uses will be documented in the system's governance record and communicated to all system users during onboarding.
+The system is intended to function as a **decision-support tool** — augmenting the analytical capacity of NCDC's epidemiology teams, not replacing their professional judgement. All outbreak alerts generated on the basis of system outputs are reviewed and authorised by qualified NCDC epidemiologists before issuance.
+
+### 2.2 Specific Use Cases
+
+The system is authorised for the following use cases:
+
+| Use Case | Description | Output Used For |
+|---|---|---|
+| Outbreak early warning | Predicting elevated disease outbreak probability at LGA level 2–4 weeks in advance | Triggering enhanced surveillance and preparedness activities |
+| Resource pre-positioning | Identifying LGAs likely to require surge medical supplies or personnel | Informing logistics pre-positioning decisions |
+| Priority alert generation | Flagging LGAs classified as High or Critical risk for epidemiologist review | Determining which LGAs receive active field investigation |
+| Seasonal disease forecasting | Generating 12-week rolling forecasts for endemic diseases (malaria, cholera, meningitis) | Informing seasonal prevention campaigns |
+
+### 2.3 Diseases in Scope
+
+The current model covers the following disease categories:
+
+- Cholera and waterborne diseases
+- Cerebrospinal meningitis (CSM)
+- Malaria (outbreak detection, not routine burden estimation)
+- Lassa fever
+- Mpox
+- Measles
+- Yellow fever
 
 ---
 
-## 5. Known Limitations
+## 3. System Description
 
-The following limitations are acknowledged and documented:
+### 3.1 How the System Works
+
+The AI module ingests weekly disease surveillance data submitted by all 36 state epidemiology teams through Nigeria's Integrated Disease Surveillance and Response (IDSR) system. This data is combined with:
+
+- Climate and environmental data (rainfall, temperature, humidity) from the Nigeria Meteorological Agency
+- Population density and movement data (LGA-level census estimates)
+- Historical outbreak records from NCDC's disease registry (2010–present)
+- Health facility capacity data (bed capacity, healthcare worker density by LGA)
+
+The model generates a **risk probability score** for each LGA for each disease category on a weekly basis. Scores are classified as:
+
+| Risk Level | Score Range | Meaning |
+|---|---|---|
+| Low | 0–0.30 | Routine surveillance sufficient |
+| Medium | 0.31–0.60 | Enhanced monitoring recommended |
+| High | 0.61–0.85 | Active investigation recommended |
+| Critical | 0.86–1.00 | Immediate outbreak response recommended |
+
+### 3.2 Model Architecture
+
+**Model Type:** Ensemble model combining:
+- Gradient Boosted Trees (XGBoost) for tabular surveillance data
+- SARIMA time-series components for seasonal pattern detection
+- Spatial autocorrelation features capturing disease spread between neighbouring LGAs
+
+**Training Data Period:** 2010–2023 (13 years of NCDC surveillance records)  
+**Retraining Frequency:** Annually, or following a significant outbreak event  
+**Model Developer:** Africa CDC Analytics Division, with WHO AFRO technical review
+
+### 3.3 Output Format
+
+The system produces a weekly **Epidemiological Risk Dashboard** accessible to:
+- NCDC Director General and senior epidemiologists (national level)
+- State Epidemiologists (state-level view)
+- NCDC Emergency Operations Centre (EOC)
+
+Outputs are never delivered directly to the public. All public communications based on system outputs are prepared and authorised by NCDC communications staff.
+
+---
+
+## 4. Intended Users
+
+| User Group | Role | Access Level |
+|---|---|---|
+| NCDC Epidemiologists | Primary users — review outputs and make alert decisions | Full dashboard access |
+| State Epidemiologists | Review state-level risk scores | State-level view |
+| NCDC Director General | Strategic oversight — reviews national risk summary | Summary dashboard |
+| NCDC Emergency Operations Centre | Operational response coordination | Full dashboard access |
+| FMoH eHealth Division | Governance oversight | Governance reporting view |
+
+---
+
+## 5. What the System Is Not Designed to Do
+
+The following uses are **outside the intended purpose** of this system and are not authorised:
+
+- Making autonomous outbreak declarations without epidemiologist review and authorisation
+- Generating individual patient-level risk assessments
+- Replacing the Integrated Disease Surveillance and Response (IDSR) reporting system
+- Providing public-facing outbreak predictions or risk scores
+- Informing clinical treatment decisions for individual patients
+- Predicting non-communicable disease burden
+
+Any use of the system outside these parameters must be approved in advance by the AI Review Committee.
+
+---
+
+## 6. Known Limitations
+
+The following limitations are documented and must be communicated to all users:
 
 | Limitation | Description | Mitigation |
-|-----------|-------------|-----------|
-| Language and format sensitivity | The model performs more accurately on well-formatted CVs with standard section headings. Unusual formats may result in incomplete data extraction. | HR coordinators are trained to identify and manually review non-standard CVs flagged by the system. |
-| Skills vocabulary drift | Technical skills terminology evolves rapidly. The model may not recognise very recent terminology for emerging roles. | Job descriptions should include both current and legacy terminology where relevant. Model to be reviewed for vocabulary updates annually. |
-| Over-reliance risk | Users may be tempted to accept AI recommendations without sufficient scrutiny. | Oversight training emphasises that the AI output is a starting point, not a conclusion. Override rates are monitored. |
-| Coverage gaps for non-EU educational systems | The model was trained predominantly on European CV formats and educational credentials. Candidates with non-EU educational backgrounds may be disadvantaged if their credentials are not recognised. | HR coordinators are trained to verify credential equivalences manually for international candidates. Vendor to provide international credential mapping in v3.2. |
+|---|---|---|
+| Rural data quality | LGAs with low IDSR reporting compliance produce less reliable predictions | Dashboard flags LGAs with <70% reporting compliance |
+| Novel pathogen performance | The model is trained on known disease patterns and will not reliably predict outbreaks of novel pathogens | Epidemiologists trained to treat novel pathogen signals as requiring independent assessment |
+| Lag in environmental data | Climate data has a 1–2 week processing lag, reducing real-time accuracy | Epidemiologists briefed on data lag in system training |
+| Model explainability | The ensemble model does not produce feature-level explanations for individual LGA predictions | Explainability enhancement planned for v3.0 |
+| Cross-border disease spread | The model does not integrate disease surveillance data from neighbouring countries | Epidemiologists instructed to supplement with WHO AFRO regional data for border LGAs |
 
 ---
 
-## 6. EU AI Act Classification Basis
+*Document Version 1.0 — October 2026*  
+*Prepared as part of the AI Governance Portfolio — [github.com/VictorO-cypher/AIGovernance](https://github.com/VictorO-cypher/AIGovernance)*
 
-**Classification:** High Risk
-**Legal basis:** EU AI Act Annex III, Category 4(a) — *"AI systems intended to be used for recruitment or selection of natural persons, notably for advertising vacancies, screening or filtering applications, evaluating candidates in the course of interviews or tests or for filtering or ranking applications."*
-
-HireAssist Pro falls squarely within this category. It screens and ranks candidate applications. The consequential nature of the decisions it informs (employment access) and the breadth of individuals affected makes this classification clear and non-controversial.
-
-**Conformity assessment pathway:** Internal control (Article 43(2)) — the system is not a safety component in critical infrastructure and does not use real-time biometric identification. Internal conformity assessment is the applicable pathway.
-
----
-
-*Provider documentation sections (§§ 1–5 of Annex IV) have been supplied by HireFlow Technologies Ltd and are incorporated into this document. NorthStar-specific deployer context is clearly identified above and in subsequent documents.*
